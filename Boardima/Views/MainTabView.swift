@@ -4,6 +4,8 @@ struct MainTabView: View {
     @State private var lock = AppLockViewModel()
     @State private var boardingList = BoardingListViewModel()
     @State private var saved = SavedViewModel()
+    @State private var meals = MealsViewModel()
+    @State private var cart = CartViewModel()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
@@ -12,9 +14,9 @@ struct MainTabView: View {
                 .tabItem { Label("Home", systemImage: "house") }
             BoardingListView()
                 .tabItem { Label("Boardings", systemImage: "bed.double") }
-            ContentUnavailableView("Meals", systemImage: "fork.knife",
-                                   description: Text("Coming soon"))
+            MealsView()
                 .tabItem { Label("Meals", systemImage: "fork.knife") }
+                .badge(cart.itemCount)
             SavedView()
                 .tabItem { Label("Saved", systemImage: "heart") }
             ProfileView()
@@ -24,6 +26,8 @@ struct MainTabView: View {
         .environment(lock)
         .environment(boardingList)
         .environment(saved)
+        .environment(meals)
+        .environment(cart)
         .onChange(of: scenePhase) { _, phase in
             if phase == .background { lock.lockIfNeeded() }
         }
