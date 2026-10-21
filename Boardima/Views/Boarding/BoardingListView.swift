@@ -26,6 +26,14 @@ struct BoardingListView: View {
             .navigationDestination(for: Boarding.self) { BoardingDetailView(boarding: $0) }
             .searchable(text: $model.searchText, prompt: "Search by name or area")
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    NavigationLink {
+                        BoardingMapView()
+                    } label: {
+                        Image(systemName: "map")
+                    }
+                    .accessibilityLabel("Show map")
+                }
                 ToolbarItem(placement: .primaryAction) {
                     Button {
                         showFilters = true
