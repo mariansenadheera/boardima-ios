@@ -14,8 +14,8 @@ final class AppLockViewModel {
     var isBiometryAvailable: Bool { biometrics.isAvailable }
     var biometryName: String { biometrics.biometryName }
 
-    init(biometrics: BiometricAuthServiceProtocol = BiometricAuthService()) {
-        self.biometrics = biometrics
+    init(biometrics: BiometricAuthServiceProtocol? = nil) {
+        self.biometrics = biometrics ?? BiometricAuthService()
         let enabled = UserDefaults.standard.bool(forKey: Self.key)
         self.isFaceIDEnabled = enabled
         self.isLocked = enabled   // lock on cold launch if enabled
