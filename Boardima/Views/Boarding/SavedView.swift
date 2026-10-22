@@ -3,6 +3,7 @@ import SwiftUI
 struct SavedView: View {
     @Environment(BoardingListViewModel.self) private var listViewModel
     @Environment(SavedViewModel.self) private var saved
+    @Environment(MatchViewModel.self) private var match
 
     private var items: [Boarding] {
         listViewModel.boardings.filter { saved.isSaved($0.id) }
@@ -17,7 +18,7 @@ struct SavedView: View {
                 } else {
                     List(items) { boarding in
                         NavigationLink(value: boarding) {
-                            BoardingRow(boarding: boarding, isSaved: true)
+                            BoardingRow(boarding: boarding, isSaved: true, match: match.score(for: boarding))
                         }
                     }
                 }

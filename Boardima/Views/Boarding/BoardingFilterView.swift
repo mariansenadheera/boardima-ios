@@ -24,6 +24,10 @@ struct BoardingFilterView: View {
                     Slider(value: $model.maxRent, in: 5000...50000, step: 1000)
                         .accessibilityLabel("Maximum monthly rent")
                 }
+                
+                Section("Sort") {
+                    Toggle("Best match first", isOn: $model.sortByMatch)
+                }
 
                 Section {
                     Button("Reset filters", role: .destructive) {

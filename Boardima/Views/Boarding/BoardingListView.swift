@@ -3,15 +3,23 @@ import SwiftUI
 struct BoardingListView: View {
     @Environment(BoardingListViewModel.self) private var viewModel
     @Environment(SavedViewModel.self) private var saved
+    @Environment(MatchViewModel.self) private var match
     @State private var showFilters = false
+    
+    private var displayed: [Boarding] {
+        let items = viewModel.filtered
+        guard viewModel.sortByMatch else { return items }
+        return items.sorted { (match.score(for: $0) ?? 0) > (match.score(for: $1) ?? 0) }
+    }
 
     var body: some View {
         @Bindable var model = viewModel
 
         NavigationStack {
-            List(model.filtered) { boarding in
+            List(displayed) { boarding in
                 NavigationLink(value: boarding) {
-                    BoardingRow(boarding: boarding, isSaved: saved.isSaved(boarding.id))
+                    BoardingRow(boarding: boarding, isSaved: saved.isSaved(boarding.id),
+                                match: match.score(for: boarding))
                 }
             }
             .overlay {

@@ -3,6 +3,8 @@ import SwiftUI
 struct BoardingRow: View {
     let boarding: Boarding
     let isSaved: Bool
+    
+    var match: Int? = nil
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -32,10 +34,21 @@ struct BoardingRow: View {
 
             Spacer()
 
-            if isSaved {
-                Image(systemName: "heart.fill")
-                    .foregroundStyle(.red)
-                    .accessibilityLabel("Saved")
+            VStack(alignment: .trailing, spacing: 6) {
+                if let match {
+                    Text("\(match)% match")
+                        .font(.caption.bold())
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(match >= 70 ? Color.green.opacity(0.2) : Color.orange.opacity(0.2),
+                                    in: Capsule())
+                        .foregroundStyle(match >= 70 ? .green : .orange)
+                }
+                if isSaved {
+                    Image(systemName: "heart.fill")
+                        .foregroundStyle(.red)
+                        .accessibilityLabel("Saved")
+                }
             }
         }
         .accessibilityElement(children: .combine)

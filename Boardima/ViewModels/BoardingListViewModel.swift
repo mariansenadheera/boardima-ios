@@ -8,6 +8,7 @@ final class BoardingListViewModel {
     var searchText = ""
     var maxRent: Double = 50000
     var selectedRoomType: String?
+    var sortByMatch = false
     var isLoading = false
     var errorMessage: String?
 
@@ -38,6 +39,7 @@ final class BoardingListViewModel {
     }
 
     func resetFilters() {
+        sortByMatch = false
         selectedRoomType = nil
         maxRent = 50000
     }

@@ -6,6 +6,7 @@ struct MainTabView: View {
     @State private var saved = SavedViewModel()
     @State private var meals = MealsViewModel()
     @State private var cart = CartViewModel()
+    @State private var match = MatchViewModel()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
@@ -28,6 +29,7 @@ struct MainTabView: View {
         .environment(saved)
         .environment(meals)
         .environment(cart)
+        .environment(match)
         .onChange(of: scenePhase) { _, phase in
             if phase == .background { lock.lockIfNeeded() }
         }
