@@ -78,6 +78,7 @@ struct ProfileView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+#if DEBUG
                 Section {
                     Button("Upload sample data to Firestore") {
                         Task {
@@ -95,6 +96,7 @@ struct ProfileView: View {
                 } header: {
                     Text("Developer")
                 }
+#endif
             }
             .navigationTitle("Profile")
         }
