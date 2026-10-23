@@ -54,6 +54,7 @@ struct BoardingListView: View {
                 }
             }
             .sheet(isPresented: $showFilters) { BoardingFilterView() }
+            .refreshable { await model.load(force: true) }
             .task { await model.load() }
         }
     }

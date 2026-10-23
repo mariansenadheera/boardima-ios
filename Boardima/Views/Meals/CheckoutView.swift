@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CheckoutView: View {
     @Environment(CartViewModel.self) private var cart
+    @Environment(NotificationManager.self) private var notifications
     let onFinished: () -> Void
 
     @State private var address = ""
@@ -57,7 +58,10 @@ struct CheckoutView: View {
                 Section {
                     Button {
                         Task {
-                            placedOrder = await cart.placeOrder(address: address, phone: phone, note: note)
+                            if let order = await cart.placeOrder(address: address, phone: phone, note: note) {
+                                placedOrder = order
+                                await notifications.scheduleOrderUpdates(for: order)
+                            }
                         }
                     } label: {
                         HStack {

@@ -57,6 +57,7 @@ struct MealsView: View {
                 }
             }
             .sheet(isPresented: $showCart) { CartView() }
+            .refreshable { await model.load(force: true) }
             .task { await model.load() }
         }
     }

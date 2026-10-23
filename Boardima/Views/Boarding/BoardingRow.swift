@@ -3,7 +3,6 @@ import SwiftUI
 struct BoardingRow: View {
     let boarding: Boarding
     let isSaved: Bool
-    
     var match: Int? = nil
 
     var body: some View {
@@ -20,24 +19,25 @@ struct BoardingRow: View {
                 Text(boarding.address)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                HStack(spacing: 6) {
-                    Text("Rs. \(boarding.monthlyRent)/mo")
-                    Text("·")
-                    Text("\(boarding.distanceToUniversityKm, specifier: "%.1f") km")
-                    Text("·")
+                Text("Rs. \(boarding.monthlyRent)/mo")
+                    .font(.subheadline.weight(.semibold))
+                HStack(spacing: 12) {
+                    Label("\(boarding.distanceToUniversityKm, specifier: "%.1f") km",
+                          systemImage: "figure.walk")
                     Label("\(boarding.rating, specifier: "%.1f")", systemImage: "star.fill")
-                        .labelStyle(.titleAndIcon)
                         .foregroundStyle(.orange)
                 }
                 .font(.footnote)
+                .labelStyle(.titleAndIcon)
             }
 
-            Spacer()
+            Spacer(minLength: 8)
 
             VStack(alignment: .trailing, spacing: 6) {
                 if let match {
                     Text("\(match)% match")
                         .font(.caption.bold())
+                        .fixedSize()
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
                         .background(match >= 70 ? Color.green.opacity(0.2) : Color.orange.opacity(0.2),

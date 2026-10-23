@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct DashboardView: View {
+    @Environment(AuthViewModel.self) private var auth
     var body: some View {
         NavigationStack {
             List {
@@ -24,9 +25,12 @@ struct DashboardView: View {
                     }
                 }
             }
-            .navigationTitle("Boardima")
+            .navigationTitle(auth.fullName.isEmpty ? "Boardima" : "Hi, \(auth.fullName.split(separator: " ").first.map(String.init) ?? auth.fullName)")
         }
     }
 }
 
-#Preview { DashboardView() }
+#Preview {
+    DashboardView()
+        .environment(AuthViewModel(service: PreviewAuthService()))
+}
