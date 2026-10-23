@@ -10,10 +10,15 @@ final class MealsViewModel {
     var isLoading = false
     var errorMessage: String?
 
-    private let repository: MealRepositoryProtocol
+    /// Only meals from vendors within this many km of the selected campus are listed.
+    let searchRadiusKm: Double = 8
 
-    init(repository: MealRepositoryProtocol? = nil) {
+    private let repository: MealRepositoryProtocol
+    private let campusStore: CampusStore
+
+    init(repository: MealRepositoryProtocol? = nil, campusStore: CampusStore? = nil) {
         self.repository = repository ?? FirestoreMealRepository()
+        self.campusStore = campusStore ?? CampusStore.shared
     }
 
     var categories: [String] {
@@ -21,13 +26,16 @@ final class MealsViewModel {
     }
 
     var filtered: [Meal] {
-        meals.filter { meal in
+        let campus = campusStore.selected
+        return meals.filter { meal in
             let matchesSearch = searchText.isEmpty
                 || meal.name.localizedCaseInsensitiveContains(searchText)
                 || meal.vendor.localizedCaseInsensitiveContains(searchText)
             let matchesCategory = selectedCategory == nil || meal.category == selectedCategory
-            return matchesSearch && matchesCategory
+            let isNearby = meal.distance(from: campus) <= searchRadiusKm
+            return matchesSearch && matchesCategory && isNearby
         }
+        .sorted { $0.distance(from: campus) < $1.distance(from: campus) }
     }
 
     func load(force: Bool = false) async {

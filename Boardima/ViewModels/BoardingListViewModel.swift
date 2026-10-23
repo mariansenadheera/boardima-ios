@@ -4,7 +4,6 @@ import Observation
 @MainActor
 @Observable
 final class BoardingListViewModel {
-    var boardings: [Boarding] = []
     var searchText = ""
     var maxRent: Double = 50000
     var selectedRoomType: String?
@@ -12,14 +11,30 @@ final class BoardingListViewModel {
     var isLoading = false
     var errorMessage: String?
 
-    private let repository: BoardingRepositoryProtocol
+    /// Only boardings within this many km of the selected campus are listed.
+    let searchRadiusKm: Double = 8
 
-    init(repository: BoardingRepositoryProtocol? = nil) {
+    private var allBoardings: [Boarding] = []
+    private let repository: BoardingRepositoryProtocol
+    private let campusStore: CampusStore
+
+    init(repository: BoardingRepositoryProtocol? = nil, campusStore: CampusStore? = nil) {
         self.repository = repository ?? FirestoreBoardingRepository()
+        self.campusStore = campusStore ?? CampusStore.shared
+    }
+
+    /// Every loaded boarding, with its distance measured from the selected campus.
+    var boardings: [Boarding] {
+        let campus = campusStore.selected
+        return allBoardings.map { boarding in
+            var copy = boarding
+            copy.distanceToUniversityKm = boarding.distance(from: campus)
+            return copy
+        }
     }
 
     var roomTypes: [String] {
-        Array(Set(boardings.map(\.roomType))).sorted()
+        Array(Set(allBoardings.map(\.roomType))).sorted()
     }
 
     var filtered: [Boarding] {
@@ -29,7 +44,8 @@ final class BoardingListViewModel {
                 || boarding.address.localizedCaseInsensitiveContains(searchText)
             let matchesRent = Double(boarding.monthlyRent) <= maxRent
             let matchesType = selectedRoomType == nil || boarding.roomType == selectedRoomType
-            return matchesSearch && matchesRent && matchesType
+            let isNearby = boarding.distanceToUniversityKm <= searchRadiusKm
+            return matchesSearch && matchesRent && matchesType && isNearby
         }
         .sorted { $0.distanceToUniversityKm < $1.distanceToUniversityKm }
     }
@@ -39,17 +55,17 @@ final class BoardingListViewModel {
     }
 
     func resetFilters() {
-        sortByMatch = false
         selectedRoomType = nil
         maxRent = 50000
+        sortByMatch = false
     }
 
     func load(force: Bool = false) async {
-        guard force || boardings.isEmpty else { return }
+        guard force || allBoardings.isEmpty else { return }
         isLoading = true
         errorMessage = nil
         do {
-            boardings = try await repository.fetchBoardings()
+            allBoardings = try await repository.fetchBoardings()
         } catch {
             errorMessage = error.localizedDescription
         }
