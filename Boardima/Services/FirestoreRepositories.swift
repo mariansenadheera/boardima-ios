@@ -46,15 +46,20 @@ struct FirestoreOrderRepository: OrderRepositoryProtocol {
     }
 }
 
-/// One-off helper that uploads the sample boardings and meals so the app has data to show.
+
+/// One-off helper that uploads sample boardings and meals for every campus.
 struct FirestoreSeeder {
     func seed() async throws {
         let db = Firestore.firestore()
         let batch = db.batch()
-        for boarding in Boarding.samples + Boarding.extraSeedData {
+
+        let boardings = Boarding.samples + Boarding.extraSeedData + CampusSeedData.boardings
+        let meals = CampusSeedData.moratuwaMeals + CampusSeedData.meals
+
+        for boarding in boardings {
             batch.setData(boarding.firestoreData, forDocument: db.collection("boardings").document(boarding.id))
         }
-        for meal in Meal.samples + Meal.extraSeedData {
+        for meal in meals {
             batch.setData(meal.firestoreData, forDocument: db.collection("meals").document(meal.id))
         }
         try await batch.commit()

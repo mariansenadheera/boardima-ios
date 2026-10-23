@@ -2,7 +2,15 @@ import Foundation
 
 extension Meal {
     var firestoreData: [String: Any] {
-        ["name": name, "vendor": vendor, "price": price, "details": details, "category": category]
+        [
+            "name": name,
+            "vendor": vendor,
+            "price": price,
+            "details": details,
+            "category": category,
+            "vendorLatitude": vendorLatitude,
+            "vendorLongitude": vendorLongitude
+        ]
     }
 
     init?(id: String, data: [String: Any]) {
@@ -13,6 +21,10 @@ extension Meal {
               let category = data["category"] as? String
         else { return nil }
 
-        self.init(id: id, name: name, vendor: vendor, price: price, details: details, category: category)
+        let latitude = data["vendorLatitude"] as? Double ?? Campus.moratuwa.latitude
+        let longitude = data["vendorLongitude"] as? Double ?? Campus.moratuwa.longitude
+
+        self.init(id: id, name: name, vendor: vendor, price: price, details: details,
+                  category: category, vendorLatitude: latitude, vendorLongitude: longitude)
     }
 }

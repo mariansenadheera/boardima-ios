@@ -7,6 +7,8 @@ struct Meal: Identifiable, Hashable {
     var price: Int
     var details: String
     var category: String
+    var vendorLatitude: Double = Campus.moratuwa.latitude
+    var vendorLongitude: Double = Campus.moratuwa.longitude
 
     static let samples: [Meal] = [
         Meal(id: "m1", name: "String Hoppers & Dhal", vendor: "Mama's Kitchen", price: 250,
