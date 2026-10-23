@@ -1,17 +1,19 @@
-//
-//  BoardimaApp.swift
-//  Boardima
-//
-//  Created by Marian Senadheera on 2026-10-18.
-//
-
 import SwiftUI
+import FirebaseCore
 
 @main
 struct BoardimaApp: App {
+    @State private var authViewModel: AuthViewModel
+
+    init() {
+        FirebaseApp.configure()
+        _authViewModel = State(initialValue: AuthViewModel())
+    }
+
     var body: some Scene {
         WindowGroup {
             RootView()
+                .environment(authViewModel)
         }
     }
 }

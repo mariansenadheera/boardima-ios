@@ -7,6 +7,7 @@ struct MainTabView: View {
     @State private var meals = MealsViewModel()
     @State private var cart = CartViewModel()
     @State private var match = MatchViewModel()
+    @State private var notifications = NotificationManager()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
@@ -29,9 +30,11 @@ struct MainTabView: View {
         .environment(saved)
         .environment(meals)
         .environment(cart)
+        .environment(notifications)
         .environment(match)
         .onChange(of: scenePhase) { _, phase in
             if phase == .background { lock.lockIfNeeded() }
         }
+        .task { await notifications.refreshStatus() }
     }
 }
