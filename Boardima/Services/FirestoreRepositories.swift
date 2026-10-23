@@ -51,10 +51,10 @@ struct FirestoreSeeder {
     func seed() async throws {
         let db = Firestore.firestore()
         let batch = db.batch()
-        for boarding in Boarding.samples {
+        for boarding in Boarding.samples + Boarding.extraSeedData {
             batch.setData(boarding.firestoreData, forDocument: db.collection("boardings").document(boarding.id))
         }
-        for meal in Meal.samples {
+        for meal in Meal.samples + Meal.extraSeedData {
             batch.setData(meal.firestoreData, forDocument: db.collection("meals").document(meal.id))
         }
         try await batch.commit()
