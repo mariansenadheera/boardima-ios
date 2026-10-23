@@ -1,0 +1,22 @@
+{
+  "activityEntities" : [
+
+  ],
+  "createdDate" : "2026-10-22T00:25:57Z",
+  "dataPathRelativeToProjectURL" : "../../Downloads/boardima_match_test.csv/",
+  "dataResult" : {
+    "createdDate" : "2026-10-22T00:25:57Z",
+    "dataSourceID" : "0DC65EE3-C39A-4D4B-B2BA-BF973C3A9134",
+    "dataURL" : "file:///Users/mariansenadheera/Downloads/boardima_match_test.csv"
+  },
+  "dataURL" : "file:///Users/mariansenadheera/Downloads/boardima_match_test.csv",
+  "experimentIDs" : [
+    "F3379A99-3650-4BF0-AA47-757EFEB1E312"
+  ],
+  "id" : "0DC65EE3-C39A-4D4B-B2BA-BF973C3A9134",
+  "modifiedDate" : "2026-10-22T00:25:57Z",
+  "pathType" : 0,
+  "preferredFilename" : "boardima_match_test.csv",
+  "title" : "boardima_match_test.csv",
+  "version" : "1.0"
+}

@@ -1,0 +1,29 @@
+{
+  "activityEntities" : [
+    "projectCreated",
+    [
+      {
+        "createdDate" : "2026-10-22T00:14:24Z",
+        "event" : "projectCreated",
+        "id" : "82262449-EA3B-4959-8272-CF6BF12F4664",
+        "subtitle" : "BoardingMatch",
+        "title" : "Project Created"
+      }
+    ]
+  ],
+  "authorName" : "Marian Senadheera",
+  "createdDate" : "2026-10-22T00:14:24Z",
+  "description" : "",
+  "id" : "4DDA5347-6BE0-4760-B67C-01D1D5E3A5A8",
+  "license" : "",
+  "location" : "",
+  "modifiedDate" : "2026-10-22T00:14:24Z",
+  "projectName" : "BoardingMatch",
+  "settingsEntity" : {
+    "snapshotOnExtendTraining" : true,
+    "snapshotOnResumeTraining" : false
+  },
+  "taskType" : "generalRegresor",
+  "title" : "Tabular Regression",
+  "version" : "1.1"
+}

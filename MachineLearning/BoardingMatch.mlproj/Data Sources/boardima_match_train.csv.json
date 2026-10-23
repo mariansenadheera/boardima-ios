@@ -1,0 +1,41 @@
+{
+  "activityEntities" : [
+    "dataSourceTrainingStarted",
+    [
+      {
+        "createdDate" : "2026-10-22T00:24:01Z",
+        "event" : "dataSourceTrainingStarted",
+        "id" : "140ECA37-F6FE-4771-9D8F-06FC041BF487",
+        "subtitle" : "BoardingMatch 1",
+        "title" : "Used By"
+      }
+    ],
+    "dataSourceMetrics",
+    [
+      {
+        "createdDate" : "2026-10-22T00:24:01Z",
+        "event" : "dataSourceMetrics",
+        "id" : "BB9A132C-379B-4616-9101-25D943DFD4B4",
+        "subtitle" : "3,000 Items",
+        "title" : "Data Summary"
+      }
+    ]
+  ],
+  "createdDate" : "2026-10-22T00:15:32Z",
+  "dataPathRelativeToProjectURL" : "../../Downloads/boardima_match_train.csv/",
+  "dataResult" : {
+    "createdDate" : "2026-10-22T00:15:32Z",
+    "dataSourceID" : "746BBB4F-2BDF-46F6-BD22-F3612D30430A",
+    "dataURL" : "file:///Users/mariansenadheera/Downloads/boardima_match_train.csv"
+  },
+  "dataURL" : "file:///Users/mariansenadheera/Downloads/boardima_match_train.csv",
+  "experimentIDs" : [
+    "F3379A99-3650-4BF0-AA47-757EFEB1E312"
+  ],
+  "id" : "746BBB4F-2BDF-46F6-BD22-F3612D30430A",
+  "modifiedDate" : "2026-10-22T00:24:01Z",
+  "pathType" : 0,
+  "preferredFilename" : "boardima_match_train.csv",
+  "title" : "boardima_match_train.csv",
+  "version" : "1.0"
+}
