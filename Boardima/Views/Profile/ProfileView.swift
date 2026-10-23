@@ -5,13 +5,22 @@ struct ProfileView: View {
     @Environment(MatchViewModel.self) private var match
     @Environment(NotificationManager.self) private var notifications
     @Environment(AuthViewModel.self) private var auth
+    @Environment(CampusStore.self) private var campusStore
     @State private var seedMessage: String?
 
     var body: some View {
         @Bindable var match = match
+        @Bindable var store = campusStore
 
         NavigationStack {
             Form {
+                Section("Campus") {
+                    Picker("Heading to", selection: $store.selected) {
+                        ForEach(Campus.all) { campus in
+                            Text(campus.name).tag(campus)
+                        }
+                    }
+                }
                 Section("Account") {
                     LabeledContent("Name", value: auth.fullName.isEmpty ? "Student" : auth.fullName)
                     LabeledContent("Email", value: auth.email)

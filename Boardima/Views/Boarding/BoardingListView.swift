@@ -4,6 +4,7 @@ struct BoardingListView: View {
     @Environment(BoardingListViewModel.self) private var viewModel
     @Environment(SavedViewModel.self) private var saved
     @Environment(MatchViewModel.self) private var match
+    @Environment(CampusStore.self) private var campusStore
     @State private var showFilters = false
     
     private var displayed: [Boarding] {
@@ -16,10 +17,16 @@ struct BoardingListView: View {
         @Bindable var model = viewModel
 
         NavigationStack {
-            List(displayed) { boarding in
-                NavigationLink(value: boarding) {
-                    BoardingRow(boarding: boarding, isSaved: saved.isSaved(boarding.id),
-                                match: match.score(for: boarding))
+            List {
+                Section {
+                    ForEach(displayed) { boarding in
+                        NavigationLink(value: boarding) {
+                            BoardingRow(boarding: boarding, isSaved: saved.isSaved(boarding.id),
+                                        match: match.score(for: boarding))
+                        }
+                    }
+                } header: {
+                    Text("Within \(Int(viewModel.searchRadiusKm)) km of \(campusStore.selected.shortName)")
                 }
             }
             .overlay {

@@ -4,6 +4,7 @@ import MapKit
 struct BoardingMapView: View {
     @Environment(BoardingListViewModel.self) private var listViewModel
     @Environment(SavedViewModel.self) private var saved
+    @Environment(CampusStore.self) private var campusStore
     @State private var mapViewModel = MapViewModel()
     @State private var location = LocationManager()
     @State private var position: MapCameraPosition = .automatic
@@ -12,20 +13,16 @@ struct BoardingMapView: View {
     //private var center: CLLocationCoordinate2D {
         //location.userLocation?.coordinate ?? Campus.coordinate
     //}
-    
-    /// Search centre: the user's location if they're near the campus, otherwise the university.
+    private var campus: Campus { campusStore.selected }
+    /// Search centre: the user's location if they're near the chosen campus, otherwise the campus.
     private var center: CLLocationCoordinate2D {
-        guard let user = location.userLocation else { return Campus.coordinate }
-        let campus = CLLocation(latitude: Campus.coordinate.latitude,
-                                longitude: Campus.coordinate.longitude)
-        return user.distance(from: campus) < 30_000 ? user.coordinate : Campus.coordinate
+        guard let user = location.userLocation else { return campus.coordinate }
+        return user.distance(from: campus.location) < 30_000 ? user.coordinate : campus.coordinate
     }
 
     private var usesUserLocation: Bool {
         guard let user = location.userLocation else { return false }
-        let campus = CLLocation(latitude: Campus.coordinate.latitude,
-                                longitude: Campus.coordinate.longitude)
-        return user.distance(from: campus) < 30_000
+        return user.distance(from: campus.location) < 30_000
     }
     
     //end
@@ -43,7 +40,7 @@ struct BoardingMapView: View {
         Map(position: $position, selection: $mapViewModel.selectedBoardingID) {
             UserAnnotation()
 
-            Annotation(Campus.name, coordinate: Campus.coordinate) {
+            Annotation(campus.name, coordinate: campus.coordinate) {
                 Image(systemName: "graduationcap.fill")
                     .padding(6)
                     .background(.indigo, in: Circle())
@@ -92,6 +89,7 @@ struct BoardingMapView: View {
         .onChange(of: mapViewModel.radiusKm) { recenter() }
         .onChange(of: mapViewModel.route) { showWholeRoute() }
         .onChange(of: location.userLocation) { recenter() }
+        .onChange(of: campusStore.selected) { recenter() }
     }
 
     // MARK: - Pieces
@@ -109,7 +107,7 @@ struct BoardingMapView: View {
             Slider(value: $mapViewModel.radiusKm, in: 0.5...5, step: 0.5)
                 .accessibilityLabel("Search radius in kilometres")
             if !usesUserLocation {
-                Text("Measuring from \(Campus.name). Allow location access to search around you.")
+                Text("Measuring from \(campus.name). Allow location access to search around you.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

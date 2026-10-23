@@ -3,12 +3,13 @@ import SwiftUI
 struct MealRow: View {
     let meal: Meal
     @Environment(CartViewModel.self) private var cart
+    @Environment(CampusStore.self) private var campusStore
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(meal.name).font(.headline)
-                Text(meal.vendor)
+                Text("\(meal.vendor) · \(meal.distance(from: campusStore.selected), specifier: "%.1f") km away")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 Text(meal.details)
