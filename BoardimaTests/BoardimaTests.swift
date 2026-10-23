@@ -100,7 +100,8 @@ struct CartViewModelTests {
 @MainActor
 struct BoardingListViewModelTests {
     private func makeLoadedViewModel() async -> BoardingListViewModel {
-        let viewModel = BoardingListViewModel(repository: MockBoardingRepository())
+        let viewModel = BoardingListViewModel(repository: MockBoardingRepository(),
+                                              campusStore: CampusStore(selected: .moratuwa))
         await viewModel.load()
         return viewModel
     }
@@ -142,6 +143,18 @@ struct BoardingListViewModelTests {
         viewModel.maxRent = 8000
         viewModel.resetFilters()
         #expect(viewModel.hasActiveFilters == false)
+    }
+    @Test func distancesFollowTheSelectedCampus() async {
+        let store = CampusStore(selected: .moratuwa)
+        let viewModel = BoardingListViewModel(repository: MockBoardingRepository(), campusStore: store)
+        await viewModel.load()
+        let near = viewModel.boardings.first { $0.id == "6" }!.distanceToUniversityKm
+
+        store.selected = .nibm
+        let far = viewModel.boardings.first { $0.id == "6" }!.distanceToUniversityKm
+
+        #expect(far > near)
+        #expect(viewModel.filtered.isEmpty)   // Moratuwa boardings are far outside NIBM's search radius
     }
 }
 
@@ -192,14 +205,14 @@ struct MapViewModelTests {
     @Test func smallRadiusFindsOnlyTheClosestBoarding() {
         let viewModel = MapViewModel()
         viewModel.radiusKm = 0.5
-        let nearby = viewModel.nearby(Boarding.samples, around: Campus.coordinate)
+        let nearby = viewModel.nearby(Boarding.samples, around: Campus.moratuwa.coordinate)
         #expect(nearby.map(\.id) == ["6"])
     }
 
     @Test func largeRadiusIncludesEveryBoarding() {
         let viewModel = MapViewModel()
         viewModel.radiusKm = 5
-        let nearby = viewModel.nearby(Boarding.samples, around: Campus.coordinate)
+        let nearby = viewModel.nearby(Boarding.samples, around: Campus.moratuwa.coordinate)
         #expect(nearby.count == Boarding.samples.count)
     }
 }
