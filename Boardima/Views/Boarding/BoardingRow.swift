@@ -16,7 +16,7 @@ struct BoardingRow: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(boarding.title).font(.headline)
-                Text(boarding.address)
+                Label(boarding.address, systemImage: "mappin.and.ellipse")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 Text("Rs. \(boarding.monthlyRent)/mo")

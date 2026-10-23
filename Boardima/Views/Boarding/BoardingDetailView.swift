@@ -1,4 +1,5 @@
 import SwiftUI
+import MapKit
 
 struct BoardingDetailView: View {
     let boarding: Boarding
@@ -18,6 +19,15 @@ struct BoardingDetailView: View {
                     stat("Distance", String(format: "%.1f km", boarding.distanceToUniversityKm))
                     stat("Rating", String(format: "%.1f ★", boarding.rating))
                 }
+                Map(initialPosition: .region(MKCoordinateRegion(center: boarding.coordinate,
+                                                                latitudinalMeters: 800,
+                                                                longitudinalMeters: 800)),
+                    interactionModes: []) {
+                    Marker(boarding.title, systemImage: "house.fill", coordinate: boarding.coordinate)
+                }
+                .frame(height: 180)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .accessibilityLabel("Map showing \(boarding.title)")
 
                 Divider()
 

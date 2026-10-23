@@ -9,9 +9,26 @@ struct BoardingMapView: View {
     @State private var position: MapCameraPosition = .automatic
 
     /// Search centre: the user's location if allowed, otherwise the university.
+    //private var center: CLLocationCoordinate2D {
+        //location.userLocation?.coordinate ?? Campus.coordinate
+    //}
+    
+    /// Search centre: the user's location if they're near the campus, otherwise the university.
     private var center: CLLocationCoordinate2D {
-        location.userLocation?.coordinate ?? Campus.coordinate
+        guard let user = location.userLocation else { return Campus.coordinate }
+        let campus = CLLocation(latitude: Campus.coordinate.latitude,
+                                longitude: Campus.coordinate.longitude)
+        return user.distance(from: campus) < 30_000 ? user.coordinate : Campus.coordinate
     }
+
+    private var usesUserLocation: Bool {
+        guard let user = location.userLocation else { return false }
+        let campus = CLLocation(latitude: Campus.coordinate.latitude,
+                                longitude: Campus.coordinate.longitude)
+        return user.distance(from: campus) < 30_000
+    }
+    
+    //end
 
     private var nearby: [Boarding] {
         mapViewModel.nearby(listViewModel.boardings, around: center)
@@ -74,6 +91,7 @@ struct BoardingMapView: View {
         .onChange(of: mapViewModel.selectedBoardingID) { mapViewModel.clearRoute() }
         .onChange(of: mapViewModel.radiusKm) { recenter() }
         .onChange(of: mapViewModel.route) { showWholeRoute() }
+        .onChange(of: location.userLocation) { recenter() }
     }
 
     // MARK: - Pieces
@@ -90,7 +108,7 @@ struct BoardingMapView: View {
             }
             Slider(value: $mapViewModel.radiusKm, in: 0.5...5, step: 0.5)
                 .accessibilityLabel("Search radius in kilometres")
-            if location.userLocation == nil {
+            if !usesUserLocation {
                 Text("Measuring from \(Campus.name). Allow location access to search around you.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
