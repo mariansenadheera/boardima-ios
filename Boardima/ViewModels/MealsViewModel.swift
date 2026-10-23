@@ -13,7 +13,7 @@ final class MealsViewModel {
     private let repository: MealRepositoryProtocol
 
     init(repository: MealRepositoryProtocol? = nil) {
-        self.repository = repository ?? SampleMealRepository()
+        self.repository = repository ?? FirestoreMealRepository()
     }
 
     var categories: [String] {
@@ -30,8 +30,8 @@ final class MealsViewModel {
         }
     }
 
-    func load() async {
-        guard meals.isEmpty else { return }
+    func load(force: Bool = false) async {
+        guard force || meals.isEmpty else { return }
         isLoading = true
         errorMessage = nil
         do {

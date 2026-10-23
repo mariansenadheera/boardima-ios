@@ -11,7 +11,7 @@ final class CartViewModel {
     private let repository: OrderRepositoryProtocol
 
     init(repository: OrderRepositoryProtocol? = nil) {
-        self.repository = repository ?? LocalOrderRepository()
+        self.repository = repository ?? FirestoreOrderRepository()
     }
 
     var itemCount: Int { lines.reduce(0) { $0 + $1.quantity } }

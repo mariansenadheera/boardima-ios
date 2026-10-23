@@ -15,7 +15,7 @@ final class BoardingListViewModel {
     private let repository: BoardingRepositoryProtocol
 
     init(repository: BoardingRepositoryProtocol? = nil) {
-        self.repository = repository ?? SampleBoardingRepository()
+        self.repository = repository ?? FirestoreBoardingRepository()
     }
 
     var roomTypes: [String] {
@@ -44,8 +44,8 @@ final class BoardingListViewModel {
         maxRent = 50000
     }
 
-    func load() async {
-        guard boardings.isEmpty else { return }
+    func load(force: Bool = false) async {
+        guard force || boardings.isEmpty else { return }
         isLoading = true
         errorMessage = nil
         do {
