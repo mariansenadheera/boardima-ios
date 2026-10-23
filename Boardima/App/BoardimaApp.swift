@@ -14,6 +14,7 @@ struct BoardimaApp: App {
         WindowGroup {
             RootView()
                 .environment(authViewModel)
+                .environment(CampusStore.shared)
         }
     }
 }
