@@ -55,13 +55,8 @@ struct AuthView: View {
 
     private var header: some View {
         VStack(spacing: 10) {
-            Image(systemName: "graduationcap.fill")
-                .font(.system(size: 40))
-                .foregroundStyle(.white)
-                .frame(width: 88, height: 88)
-                .background(Theme.navy, in: RoundedRectangle(cornerRadius: 24))
+            LogoMark(size: 88)
                 .shadow(color: .black.opacity(0.12), radius: 10, y: 4)
-                .accessibilityHidden(true)
 
             Text("Boardima")
                 .font(.largeTitle.bold())
