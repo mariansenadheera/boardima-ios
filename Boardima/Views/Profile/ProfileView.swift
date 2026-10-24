@@ -7,13 +7,39 @@ struct ProfileView: View {
     @Environment(AuthViewModel.self) private var auth
     @Environment(CampusStore.self) private var campusStore
     @State private var seedMessage: String?
+    
+    private var initials: String {
+        let letters = auth.fullName.split(separator: " ").prefix(2).compactMap(\.first)
+        return letters.isEmpty ? "S" : String(letters).uppercased()
+    }
 
     var body: some View {
         @Bindable var match = match
         @Bindable var store = campusStore
 
         NavigationStack {
-            Form {
+                    VStack(spacing: 0) {
+                        AppHeader()
+                        Text("Profile")
+                            .font(.title2.bold())
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal)
+                            .padding(.bottom, 8)
+                        Form {
+                Section {
+                    HStack(spacing: 16) {
+                        AvatarView(imageName: "avatar-user", initials: initials, size: 60)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(auth.fullName.isEmpty ? "Student" : auth.fullName)
+                                .font(.headline)
+                            Text(auth.email)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .padding(.vertical, 4)
+                    .accessibilityElement(children: .combine)
+                }
                 Section("Campus") {
                     Picker("Heading to", selection: $store.selected) {
                         ForEach(Campus.all) { campus in
@@ -22,8 +48,6 @@ struct ProfileView: View {
                     }
                 }
                 Section("Account") {
-                    LabeledContent("Name", value: auth.fullName.isEmpty ? "Student" : auth.fullName)
-                    LabeledContent("Email", value: auth.email)
                     Button("Sign out", role: .destructive) { auth.signOut() }
                 }
                 Section {
@@ -98,7 +122,9 @@ struct ProfileView: View {
                 }
 #endif
             }
-            .navigationTitle("Profile")
+                    }
+                                .background(Theme.background)
+                                .toolbar(.hidden, for: .navigationBar)
         }
     }
 }
