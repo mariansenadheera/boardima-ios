@@ -7,61 +7,171 @@ struct DashboardView: View {
     @Environment(MealsViewModel.self) private var mealsViewModel
     @Environment(MatchViewModel.self) private var match
     @Environment(SavedViewModel.self) private var saved
+    @Environment(TabRouter.self) private var router
 
-    private var title: String {
-        let first = auth.fullName.split(separator: " ").first.map(String.init) ?? ""
-        return first.isEmpty ? "Boardima" : "Hi, \(first)"
+    private var firstName: String {
+        auth.fullName.split(separator: " ").first.map(String.init) ?? ""
+    }
+
+    private var greeting: String {
+        switch Calendar.current.component(.hour, from: Date()) {
+        case 5..<12: "Good morning"
+        case 12..<17: "Good afternoon"
+        case 17..<22: "Good evening"
+        default: "Hello"
+        }
+    }
+
+    private var recommended: [Boarding] {
+        Array(boardingList.filtered
+            .sorted { (match.score(for: $0) ?? 0) > (match.score(for: $1) ?? 0) }
+            .prefix(3))
     }
 
     var body: some View {
-        @Bindable var store = campusStore
-
         NavigationStack {
-            List {
-                Section("Today I'm going to") {
-                    Picker("Campus", selection: $store.selected) {
-                        ForEach(Campus.all) { campus in
-                            Text(campus.name).tag(campus)
-                        }
+            VStack(spacing: 0) {
+                AppHeader()
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        greetingBlock
+                        quickActions
+                        recommendedSection
+                        mealsSection
                     }
+                    .padding(.horizontal)
+                    .padding(.bottom, 24)
                 }
-
-                Section("Boardings near \(campusStore.selected.shortName)") {
-                    let items = Array(boardingList.filtered.prefix(3))
-                    if items.isEmpty {
-                        Text("No boardings found near this campus yet.")
-                            .foregroundStyle(.secondary)
-                    }
-                    ForEach(items) { boarding in
-                        NavigationLink(value: boarding) {
-                            BoardingRow(boarding: boarding,
-                                        isSaved: saved.isSaved(boarding.id),
-                                        match: match.score(for: boarding))
-                        }
-                    }
-                }
-
-                Section("Food near \(campusStore.selected.shortName)") {
-                    let items = Array(mealsViewModel.filtered.prefix(3))
-                    if items.isEmpty {
-                        Text("No food providers found near this campus yet.")
-                            .foregroundStyle(.secondary)
-                    }
-                    ForEach(items) { meal in
-                        MealRow(meal: meal)
-                    }
+                .refreshable {
+                    await boardingList.load(force: true)
+                    await mealsViewModel.load(force: true)
                 }
             }
-            .navigationTitle(title)
+            .background(Theme.background)
+            .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: Boarding.self) { BoardingDetailView(boarding: $0) }
             .task {
                 await boardingList.load()
                 await mealsViewModel.load()
             }
-            .refreshable {
-                await boardingList.load(force: true)
-                await mealsViewModel.load(force: true)
+        }
+    }
+
+    // MARK: - Sections
+
+    private var greetingBlock: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(firstName.isEmpty ? "Hi there, \(greeting)!" : "Hi \(firstName), \(greeting)!")
+                .font(.system(.title3, design: .rounded).weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            Menu {
+                Picker("Campus", selection: Bindable(campusStore).selected) {
+                    ForEach(Campus.all) { campus in
+                        Text(campus.name).tag(campus)
+                    }
+                }
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "graduationcap")
+                    Text(campusStore.selected.name).lineLimit(1)
+                    Image(systemName: "chevron.down").font(.caption)
+                }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Theme.navy)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 9)
+                .background(Theme.card, in: Capsule())
+                .shadow(color: .black.opacity(0.06), radius: 6, y: 2)
             }
+            .accessibilityLabel("Campus: \(campusStore.selected.name). Tap to change.")
+
+            Label("Showing places within \(Int(boardingList.searchRadiusKm)) km of campus",
+                  systemImage: "location.circle")
+                .font(.footnote)
+                .foregroundStyle(Theme.navy)
+                .padding(12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Theme.navy.opacity(0.07), in: RoundedRectangle(cornerRadius: 12))
+        }
+    }
+
+    private var quickActions: some View {
+        HStack(spacing: 12) {
+            tile("Find Boarding", symbol: "building.2.fill", fill: Theme.navy) {
+                router.selected = .boardings
+            }
+            tile("Order Lunch", symbol: "fork.knife", fill: Theme.orange) {
+                router.selected = .meals
+            }
+        }
+    }
+
+    private func tile(_ title: String, symbol: String, fill: Color,
+                      action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            VStack(spacing: 10) {
+                Image(systemName: symbol)
+                    .font(.title2)
+                    .frame(width: 48, height: 48)
+                    .background(.white.opacity(0.2), in: Circle())
+                Text(title).font(.subheadline.weight(.semibold))
+            }
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 20)
+            .background(fill, in: RoundedRectangle(cornerRadius: Theme.cornerRadius))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var recommendedSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            sectionHeader("Recommended for you", action: "See all") { router.selected = .boardings }
+
+            if recommended.isEmpty {
+                Text("No boardings found near this campus yet.").foregroundStyle(.secondary)
+            }
+            ForEach(recommended) { boarding in
+                NavigationLink(value: boarding) {
+                    BoardingRow(boarding: boarding,
+                                isSaved: saved.isSaved(boarding.id),
+                                match: match.score(for: boarding),
+                                onToggleSave: { saved.toggle(boarding) })
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    private var mealsSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            sectionHeader("Today's meals near campus", action: "View menu") { router.selected = .meals }
+
+            let items = Array(mealsViewModel.filtered.prefix(6))
+            if items.isEmpty {
+                Text("No food providers found near this campus yet.").foregroundStyle(.secondary)
+            }
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(items) { meal in
+                        MealCard(meal: meal)
+                    }
+                }
+                .padding(.vertical, 8)
+            }
+            .scrollClipDisabled()
+        }
+    }
+
+    private func sectionHeader(_ title: String, action: String,
+                               perform: @escaping () -> Void) -> some View {
+        HStack {
+            Text(title).font(.title3.bold())
+            Spacer()
+            Button(action, action: perform)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Theme.brown)
         }
     }
 }
