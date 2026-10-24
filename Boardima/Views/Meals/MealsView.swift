@@ -9,56 +9,73 @@ struct MealsView: View {
         @Bindable var model = viewModel
 
         NavigationStack {
-            List {
-                Section {
-                    Picker("Category", selection: $model.selectedCategory) {
-                        Text("All").tag(String?.none)
-                        ForEach(model.categories, id: \.self) { category in
-                            Text(category).tag(String?.some(category))
+            VStack(spacing: 0) {
+                AppHeader()
+
+                ScrollView {
+                    LazyVStack(spacing: 14) {
+                        HStack {
+                            Text("Meals").font(.title2.bold())
+                            Spacer()
+                            cartButton
+                        }
+
+                        SearchField(prompt: "Search meals or vendors", text: $model.searchText)
+
+                        Picker("Category", selection: $model.selectedCategory) {
+                            Text("All").tag(String?.none)
+                            ForEach(model.categories, id: \.self) { category in
+                                Text(category).tag(String?.some(category))
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .padding(8)
+                        .background(Theme.card, in: RoundedRectangle(cornerRadius: 16))
+
+                        ForEach(model.filtered) { meal in
+                            MealRow(meal: meal)
                         }
                     }
-                    .pickerStyle(.segmented)
+                    .padding(.horizontal)
+                    .padding(.top, 8)
+                    .padding(.bottom)
                 }
-
-                Section {
-                    ForEach(model.filtered) { meal in
-                        MealRow(meal: meal)
+                .scrollDismissesKeyboard(.interactively)
+                .refreshable { await model.load(force: true) }
+                .overlay {
+                    if model.isLoading {
+                        ProgressView()
+                    } else if model.filtered.isEmpty {
+                        ContentUnavailableView("No meals found", systemImage: "fork.knife",
+                                               description: Text("Try a different search or category."))
                     }
                 }
             }
-            .overlay {
-                if model.isLoading {
-                    ProgressView()
-                } else if model.filtered.isEmpty {
-                    ContentUnavailableView("No meals found", systemImage: "fork.knife",
-                                           description: Text("Try a different search or category."))
-                }
-            }
-            .navigationTitle("Meals")
-            .searchable(text: $model.searchText, prompt: "Search meals or vendors")
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        showCart = true
-                    } label: {
-                        Image(systemName: "cart")
-                            .overlay(alignment: .topTrailing) {
-                                if cart.itemCount > 0 {
-                                    Text("\(cart.itemCount)")
-                                        .font(.caption2.bold())
-                                        .foregroundStyle(.white)
-                                        .padding(4)
-                                        .background(.red, in: Circle())
-                                        .offset(x: 10, y: -10)
-                                }
-                            }
-                    }
-                    .accessibilityLabel("Cart, \(cart.itemCount) items")
-                }
-            }
+            .background(Theme.background)
+            .toolbar(.hidden, for: .navigationBar)
             .sheet(isPresented: $showCart) { CartView() }
-            .refreshable { await model.load(force: true) }
             .task { await model.load() }
         }
+    }
+
+    private var cartButton: some View {
+        Button {
+            showCart = true
+        } label: {
+            CircleIcon(symbol: "cart")
+                .overlay(alignment: .topTrailing) {
+                    if cart.itemCount > 0 {
+                        Text("\(cart.itemCount)")
+                            .font(.caption2.bold())
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .frame(minWidth: 18)
+                            .background(Color.red, in: Capsule())
+                            .offset(x: 6, y: -6)
+                    }
+                }
+        }
+        .accessibilityLabel("Cart, \(cart.itemCount) items")
     }
 }
