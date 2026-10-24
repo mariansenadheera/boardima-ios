@@ -14,48 +14,66 @@ struct CheckoutView: View {
         if let order = placedOrder {
             OrderConfirmationView(order: order, onDone: onFinished)
         } else {
-            Form {
-                Section("Delivery details") {
-                    TextField("Boarding address", text: $address, axis: .vertical)
-                        .textContentType(.fullStreetAddress)
-                    TextField("Phone number", text: $phone)
-                        .textContentType(.telephoneNumber)
-                        .keyboardType(.phonePad)
-                    TextField("Note for the vendor (optional)", text: $note, axis: .vertical)
-                }
-
-                Section("Payment") {
-                    Label("Cash on delivery", systemImage: "banknote")
-                    Text("You pay the delivery person in cash when your meal arrives.")
-                        .font(.footnote)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("Delivery destination")
+                        .font(.caption.weight(.bold))
                         .foregroundStyle(.secondary)
-                }
 
-                Section("Summary") {
-                    ForEach(cart.lines) { line in
-                        HStack {
-                            Text("\(line.quantity) × \(line.meal.name)")
-                            Spacer()
-                            Text("Rs. \(line.meal.price * line.quantity)")
+                    VStack(spacing: 0) {
+                        FormFieldRow(icon: "mappin.and.ellipse", title: "BOARDING ADDRESS") {
+                            TextField("Where should we deliver?", text: $address, axis: .vertical)
+                                .textContentType(.fullStreetAddress)
                         }
-                        .font(.subheadline)
+                        Divider()
+                        FormFieldRow(icon: "phone", title: "PHONE NUMBER") {
+                            TextField("07X XXX XXXX", text: $phone)
+                                .textContentType(.telephoneNumber)
+                                .keyboardType(.phonePad)
+                        }
+                        Divider()
+                        FormFieldRow(icon: "text.bubble", title: "NOTE FOR THE VENDOR (OPTIONAL)") {
+                            TextField("Less spicy, no onions…", text: $note, axis: .vertical)
+                        }
                     }
-                    HStack {
-                        Text("Total").bold()
-                        Spacer()
-                        Text("Rs. \(cart.total)").bold()
-                    }
-                }
+                    .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cornerRadius))
+                    .shadow(color: .black.opacity(0.06), radius: 8, y: 2)
 
-                if let message = cart.errorMessage {
-                    Section {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Label("Order summary", systemImage: "fork.knife")
+                            .font(.headline)
+                        Divider()
+                        ForEach(cart.lines) { line in
+                            HStack {
+                                Text("\(line.quantity) × \(line.meal.name)")
+                                Spacer()
+                                Text("Rs. \(line.meal.price * line.quantity)")
+                            }
+                            .font(.subheadline)
+                        }
+                        HStack {
+                            Text("Total amount").font(.headline)
+                            Spacer()
+                            Text("Rs. \(cart.total)")
+                                .font(.title3.bold())
+                                .foregroundStyle(Theme.navy)
+                        }
+                        .padding(.top, 4)
+                        HStack {
+                            Label("Payment: Cash on delivery", systemImage: "banknote")
+                            Spacer()
+                            Text("No upfront payment").foregroundStyle(Theme.brown)
+                        }
+                        .font(.footnote)
+                    }
+                    .cardStyle()
+
+                    if let message = cart.errorMessage {
                         Text(message)
                             .font(.footnote)
                             .foregroundStyle(.red)
                     }
-                }
 
-                Section {
                     Button {
                         Task {
                             if let order = await cart.placeOrder(address: address, phone: phone, note: note) {
@@ -64,19 +82,19 @@ struct CheckoutView: View {
                             }
                         }
                     } label: {
-                        HStack {
-                            Spacer()
-                            if cart.isPlacing {
-                                ProgressView()
-                            } else {
-                                Text("Place order").bold()
-                            }
-                            Spacer()
+                        if cart.isPlacing {
+                            ProgressView().tint(.white)
+                        } else {
+                            Label("Confirm order", systemImage: "checkmark.circle")
                         }
                     }
+                    .buttonStyle(BrandButtonStyle(tint: Theme.orange))
                     .disabled(cart.isPlacing)
                 }
+                .padding()
             }
+            .scrollDismissesKeyboard(.interactively)
+            .background(Theme.background)
             .navigationTitle("Checkout")
             .navigationBarTitleDisplayMode(.inline)
         }
