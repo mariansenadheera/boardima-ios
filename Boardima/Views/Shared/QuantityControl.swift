@@ -9,6 +9,7 @@ struct QuantityControl: View {
         if quantity == 0 {
             Button("Add", action: onAdd)
                 .buttonStyle(.borderedProminent)
+                .tint(Theme.orange)
                 .controlSize(.small)
         } else {
             HStack(spacing: 10) {
@@ -27,6 +28,7 @@ struct QuantityControl: View {
                 .accessibilityLabel("Add one")
             }
             .font(.title3)
+            .foregroundStyle(Theme.navy)
             .buttonStyle(.borderless)
         }
     }
