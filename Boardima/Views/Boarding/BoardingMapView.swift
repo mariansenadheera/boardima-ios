@@ -9,11 +9,10 @@ struct BoardingMapView: View {
     @State private var location = LocationManager()
     @State private var position: MapCameraPosition = .automatic
 
-    /// Search centre: the user's location if allowed, otherwise the university.
-    //private var center: CLLocationCoordinate2D {
-        //location.userLocation?.coordinate ?? Campus.coordinate
-    //}
+    private let radiusOptions: [Double] = [0.5, 1, 2, 3, 5]
+
     private var campus: Campus { campusStore.selected }
+
     /// Search centre: the user's location if they're near the chosen campus, otherwise the campus.
     private var center: CLLocationCoordinate2D {
         guard let user = location.userLocation else { return campus.coordinate }
@@ -24,8 +23,6 @@ struct BoardingMapView: View {
         guard let user = location.userLocation else { return false }
         return user.distance(from: campus.location) < 30_000
     }
-    
-    //end
 
     private var nearby: [Boarding] {
         mapViewModel.nearby(listViewModel.boardings, around: center)
@@ -43,19 +40,19 @@ struct BoardingMapView: View {
             Annotation(campus.name, coordinate: campus.coordinate) {
                 Image(systemName: "graduationcap.fill")
                     .padding(6)
-                    .background(.indigo, in: Circle())
+                    .background(Theme.navy, in: Circle())
                     .foregroundStyle(.white)
             }
 
             MapCircle(center: center, radius: mapViewModel.radiusKm * 1000)
-                .foregroundStyle(.blue.opacity(0.08))
-                .stroke(.blue.opacity(0.5), lineWidth: 1)
+                .foregroundStyle(Theme.orange.opacity(0.10))
+                .stroke(Theme.orange.opacity(0.6), lineWidth: 1)
 
             ForEach(nearby) { boarding in
                 Marker(boarding.title,
                        systemImage: saved.isSaved(boarding.id) ? "heart.fill" : "house.fill",
                        coordinate: boarding.coordinate)
-                    .tint(saved.isSaved(boarding.id) ? .red : .blue)
+                    .tint(saved.isSaved(boarding.id) ? Color.red : Theme.navy)
                     .tag(boarding.id)
             }
 
@@ -94,18 +91,32 @@ struct BoardingMapView: View {
 
     // MARK: - Pieces
 
+    private func radiusLabel(_ km: Double) -> String {
+        km < 1 ? "\(Int(km * 1000)) m" : "\(Int(km)) km"
+    }
+
     private var radiusBar: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 10) {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(radiusOptions, id: \.self) { km in
+                        FilterChip(title: radiusLabel(km),
+                                   isSelected: mapViewModel.radiusKm == km) {
+                            mapViewModel.radiusKm = km
+                        }
+                    }
+                }
+            }
             HStack {
-                Text("Within \(mapViewModel.radiusKm, specifier: "%.1f") km")
+                Text("\(nearby.count) boardings within \(radiusLabel(mapViewModel.radiusKm))")
                     .font(.subheadline.bold())
                 Spacer()
-                Text("\(nearby.count) boardings")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                if !usesUserLocation {
+                    Text("from \(campus.shortName)")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
             }
-            Slider(value: $mapViewModel.radiusKm, in: 0.5...5, step: 0.5)
-                .accessibilityLabel("Search radius in kilometres")
             if !usesUserLocation {
                 Text("Measuring from \(campus.name). Allow location access to search around you.")
                     .font(.caption)
@@ -113,18 +124,25 @@ struct BoardingMapView: View {
             }
         }
         .padding(12)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
         .padding(.horizontal)
     }
 
     private func card(for boarding: Boarding) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
+                PhotoView(name: PhotoLibrary.roomImageName(for: boarding.id), symbol: "bed.double.fill")
+                    .frame(width: 64, height: 64)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+
                 VStack(alignment: .leading, spacing: 2) {
                     Text(boarding.title).font(.headline)
-                    Text("Rs. \(boarding.monthlyRent)/mo · \(boarding.roomType)")
+                    Text("Rs. \(boarding.monthlyRent.formatted()) / mo · \(boarding.roomType)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                    Label("\(boarding.rating, specifier: "%.1f")", systemImage: "star.fill")
+                        .font(.caption.bold())
+                        .foregroundStyle(Theme.brown)
                 }
                 Spacer()
                 Button {
@@ -154,11 +172,13 @@ struct BoardingMapView: View {
                     }
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(Theme.navy)
 
                 NavigationLink(value: boarding) {
                     Text("Details")
                 }
                 .buttonStyle(.bordered)
+                .tint(Theme.navy)
 
                 if mapViewModel.hasRoute {
                     Button("Clear") { mapViewModel.clearRoute() }
@@ -173,7 +193,7 @@ struct BoardingMapView: View {
             }
         }
         .padding()
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20))
         .padding(.horizontal)
         .padding(.bottom, 4)
     }
