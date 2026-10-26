@@ -30,6 +30,8 @@ struct MainTabView: View {
                 .tabItem { Label("Profile", systemImage: "person") }
                 .tag(AppTab.profile)
         }
+        //adaptive layout
+        .adaptiveTabStyle()
         .overlay { if lock.isLocked { LockView() } }
         .environment(lock)
         .environment(boardingList)
