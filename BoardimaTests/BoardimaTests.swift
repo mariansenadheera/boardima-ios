@@ -1,5 +1,6 @@
 import Testing
 import CoreLocation
+import SwiftUI
 @testable import Boardima
 
 // MARK: - Mocks
@@ -214,5 +215,13 @@ struct MapViewModelTests {
         viewModel.radiusKm = 5
         let nearby = viewModel.nearby(Boarding.samples, around: Campus.moratuwa.coordinate)
         #expect(nearby.count == Boarding.samples.count)
+    }
+}
+
+struct AppearanceTests {
+    @Test func appearanceModesMapToColourSchemes() {
+        #expect(AppearanceMode.system.scheme == nil)
+        #expect(AppearanceMode.light.scheme == .light)
+        #expect(AppearanceMode.dark.scheme == .dark)
     }
 }
