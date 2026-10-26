@@ -80,7 +80,7 @@ struct DashboardView: View {
                     Image(systemName: "chevron.down").font(.caption)
                 }
                 .font(.subheadline.weight(.semibold))
-                .foregroundStyle(Theme.navy)
+                .foregroundStyle(Theme.ink)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 9)
                 .background(Theme.card, in: Capsule())
@@ -91,7 +91,7 @@ struct DashboardView: View {
             Label("Showing places within \(Int(boardingList.searchRadiusKm)) km of campus",
                   systemImage: "location.circle")
                 .font(.footnote)
-                .foregroundStyle(Theme.navy)
+                .foregroundStyle(Theme.ink)
                 .padding(12)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Theme.navy.opacity(0.07), in: RoundedRectangle(cornerRadius: 12))

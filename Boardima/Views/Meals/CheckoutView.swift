@@ -59,7 +59,7 @@ struct CheckoutView: View {
                             Spacer()
                             Text("Rs. \(cart.total)")
                                 .font(.title3.bold())
-                                .foregroundStyle(Theme.navy)
+                                .foregroundStyle(Theme.ink)
                         }
                         .padding(.top, 4)
                         HStack {

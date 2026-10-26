@@ -7,6 +7,7 @@ struct ProfileView: View {
     @Environment(AuthViewModel.self) private var auth
     @Environment(CampusStore.self) private var campusStore
     @State private var seedMessage: String?
+    @AppStorage("appearance") private var appearance = AppearanceMode.system.rawValue
     
     private var initials: String {
         let letters = auth.fullName.split(separator: " ").prefix(2).compactMap(\.first)
@@ -48,6 +49,18 @@ struct ProfileView: View {
                         }
                     }
                 }
+                
+                Section("Appearance") {
+                    Picker("Theme", selection: $appearance) {
+                        ForEach(AppearanceMode.allCases) { mode in
+                            Text(mode.title).tag(mode.rawValue)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .accessibilityLabel("App theme")
+                }
+                            
+                
                 Section("Account") {
                     Button("Sign out", role: .destructive) { auth.signOut() }
                 }

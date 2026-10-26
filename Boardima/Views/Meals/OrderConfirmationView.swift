@@ -52,7 +52,7 @@ struct OrderConfirmationView: View {
                             Spacer()
                             Text("Rs. \(order.total)")
                                 .font(.title2.bold())
-                                .foregroundStyle(Theme.navy)
+                                .foregroundStyle(Theme.ink)
                         }
                         Divider()
                         HStack {

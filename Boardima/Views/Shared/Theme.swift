@@ -13,7 +13,20 @@ enum Theme {
     // Approximate values taken from the prototype. Check them with Figma's Inspect panel and adjust.
     static let navy = Color(hex: 0x0B1B3F)
     static let orange = Color(hex: 0xE8832A)
-    static let brown = Color(hex: 0x8A4A12)
+    //static let brown = Color(hex: 0x8A4A12)
+    /// Navy for text and icons. Lighter in dark mode so it stays readable.
+    static let ink = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.66, green: 0.76, blue: 1.0, alpha: 1)
+            : UIColor(red: 0x0B / 255, green: 0x1B / 255, blue: 0x3F / 255, alpha: 1)
+    })
+
+    /// Brown text. Becomes a warm orange in dark mode.
+    static let brown = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.94, green: 0.63, blue: 0.33, alpha: 1)
+            : UIColor(red: 0x8A / 255, green: 0x4A / 255, blue: 0x12 / 255, alpha: 1)
+    })
     static let green = Color(hex: 0x1E7A45)
     
     /// Deeper orange for text and button backgrounds.
@@ -65,3 +78,23 @@ extension View {
     func cardStyle() -> some View { modifier(CardStyle()) }
     func chipStyle(tint: Color = Theme.navy) -> some View { modifier(ChipStyle(tint: tint)) }
 }
+
+enum AppearanceMode: String, CaseIterable, Identifiable {
+    case system, light, dark
+    var id: String { rawValue }
+    var title: String {
+        switch self {
+        case .system: "System default"
+        case .light: "Light"
+        case .dark: "Dark"
+        }
+    }
+    var scheme: ColorScheme? {
+        switch self {
+        case .system: nil
+        case .light: .light
+        case .dark: .dark
+        }
+    }
+}
+

@@ -124,7 +124,7 @@ struct BoardingDetailView: View {
                     ForEach(boarding.facilities, id: \.self) { facility in
                         HStack(spacing: 10) {
                             Image(systemName: icon(for: facility))
-                                .foregroundStyle(Theme.navy)
+                                .foregroundStyle(Theme.ink)
                                 .frame(width: 36, height: 36)
                                 .background(Theme.navy.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
                                 .accessibilityHidden(true)

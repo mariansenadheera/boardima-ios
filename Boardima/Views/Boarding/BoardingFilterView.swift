@@ -68,7 +68,7 @@ struct BoardingFilterView: View {
                 HStack(spacing: 12) {
                     Button("Reset") { model.resetFilters() }
                         .font(.headline)
-                        .foregroundStyle(Theme.navy)
+                        .foregroundStyle(Theme.ink)
                         .padding(.vertical, 16)
                         .padding(.horizontal, 20)
                         .background(Theme.card, in: RoundedRectangle(cornerRadius: 16))

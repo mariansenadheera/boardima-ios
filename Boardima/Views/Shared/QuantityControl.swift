@@ -31,7 +31,7 @@ struct QuantityControl: View {
                 .accessibilityLabel("Add one \(itemName)")
             }
             .font(.title3)
-            .foregroundStyle(Theme.navy)
+            .foregroundStyle(Theme.ink)
             .buttonStyle(.borderless)
         }
     }

@@ -48,7 +48,7 @@ struct CartView: View {
                                     Spacer()
                                     Text("Rs. \(cart.total)")
                                         .font(.title2.bold())
-                                        .foregroundStyle(Theme.navy)
+                                        .foregroundStyle(Theme.ink)
                                 }
                                 Divider()
                                 HStack {
