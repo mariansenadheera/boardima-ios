@@ -40,4 +40,11 @@ final class BoardimaUITests: XCTestCase {
             XCUIApplication().launch()
         }
     }
+    
+    @MainActor
+    func testAccessibilityAuditOfFirstScreen() throws {
+        let app = XCUIApplication()
+        app.launch()
+        try app.performAccessibilityAudit()
+    }
 }

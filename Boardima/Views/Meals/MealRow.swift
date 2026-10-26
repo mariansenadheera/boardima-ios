@@ -4,9 +4,16 @@ struct MealRow: View {
     let meal: Meal
     @Environment(CartViewModel.self) private var cart
     @Environment(CampusStore.self) private var campusStore
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    private var layout: AnyLayout {
+        typeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
+            : AnyLayout(HStackLayout(spacing: 12))
+    }
 
     var body: some View {
-        HStack(spacing: 12) {
+        layout {
             PhotoView(name: PhotoLibrary.foodImageName(for: meal.id), symbol: "fork.knife")
                 .frame(width: 84, height: 84)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
@@ -17,7 +24,7 @@ struct MealRow: View {
                     Text(meal.vendor)
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(Theme.brown)
-                        .lineLimit(1)
+                        .lineLimit(typeSize.isAccessibilitySize ? 3 : 1)
                 }
                 Text(meal.name).font(.headline)
                 Text("\(meal.distance(from: campusStore.selected), specifier: "%.1f") km away")
@@ -25,11 +32,15 @@ struct MealRow: View {
                     .foregroundStyle(.secondary)
                 Text("Rs. \(meal.price)")
                     .font(.subheadline.bold())
-                    .foregroundStyle(Theme.orange)
+                    .foregroundStyle(Theme.orangeStrong)
             }
-            Spacer(minLength: 4)
+            .accessibilityElement(children: .combine)
+
+            if !typeSize.isAccessibilitySize { Spacer(minLength: 4) }
+
             QuantityControl(
                 quantity: cart.quantity(of: meal),
+                itemName: meal.name,
                 onAdd: { cart.add(meal) },
                 onRemove: { cart.remove(meal) }
             )

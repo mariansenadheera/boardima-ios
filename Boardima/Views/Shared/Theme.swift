@@ -15,6 +15,9 @@ enum Theme {
     static let orange = Color(hex: 0xE8832A)
     static let brown = Color(hex: 0x8A4A12)
     static let green = Color(hex: 0x1E7A45)
+    
+    /// Deeper orange for text and button backgrounds.
+    static let orangeStrong = Color(hex: 0xB45309)
 
     static let background = Color(.systemGroupedBackground)
     static let card = Color(.secondarySystemGroupedBackground)

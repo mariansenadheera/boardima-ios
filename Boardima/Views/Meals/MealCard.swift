@@ -28,12 +28,12 @@ struct MealCard: View {
                 HStack {
                     Text("Rs. \(meal.price)")
                         .font(.headline)
-                        .foregroundStyle(Theme.orange)
+                        .foregroundStyle(Theme.orangeStrong)
                     Spacer()
                     Button("Order Now") { cart.add(meal) }
                         .font(.footnote.bold())
                         .buttonStyle(.borderedProminent)
-                        .tint(Theme.orange)
+                        .tint(Theme.orangeStrong)
                 }
             }
             .padding(12)

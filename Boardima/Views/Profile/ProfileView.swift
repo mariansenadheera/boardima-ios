@@ -25,6 +25,7 @@ struct ProfileView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
                             .padding(.bottom, 8)
+                            .accessibilityAddTraits(.isHeader)
                         Form {
                 Section {
                     HStack(spacing: 16) {

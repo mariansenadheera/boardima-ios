@@ -10,6 +10,7 @@ private struct OnboardingPage: Identifiable {
 struct OnboardingView: View {
     let onFinish: () -> Void
     @State private var page = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private let pages = [
         OnboardingPage(id: 0, icon: "house.lodge.fill",
@@ -64,7 +65,7 @@ struct OnboardingView: View {
                 if isLastPage {
                     onFinish()
                 } else {
-                    withAnimation { page += 1 }
+                    if reduceMotion { page += 1 } else { withAnimation { page += 1 } }
                 }
             } label: {
                 Text(isLastPage ? "Get started" : "Next")

@@ -22,11 +22,13 @@ struct BoardingRow: View {
 
                 HStack(spacing: 6) {
                     Text(boarding.roomType).chipStyle(tint: Theme.brown)
-                    ForEach(boarding.facilities.prefix(2), id: \.self) { facility in
-                        Text(facility).chipStyle()
-                    }
-                    if boarding.facilities.count > 2 {
-                        Text("+\(boarding.facilities.count - 2)").chipStyle(tint: .secondary)
+                    if !typeSize.isAccessibilitySize {
+                        ForEach(boarding.facilities.prefix(2), id: \.self) { facility in
+                            Text(facility).chipStyle()
+                        }
+                        if boarding.facilities.count > 2 {
+                            Text("+\(boarding.facilities.count - 2)").chipStyle(tint: .secondary)
+                        }
                     }
                 }
                 .lineLimit(1)
@@ -40,9 +42,34 @@ struct BoardingRow: View {
         .background(Theme.card)
         .clipShape(RoundedRectangle(cornerRadius: 22))
         .shadow(color: .black.opacity(0.08), radius: 10, y: 3)
-        .accessibilityElement(children: .contain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(accessibilitySummary)
+        .accessibilityAction(named: isSaved ? "Remove from saved" : "Save boarding") {
+            onToggleSave?()
+        }
     }
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    /// One clear sentence for VoiceOver instead of many small stops.
+    private var accessibilitySummary: String {
+        var parts = [
+            boarding.title,
+            boarding.address,
+            "Rs. \(boarding.monthlyRent.formatted()) per month",
+            "\(boarding.roomType) room",
+            String(format: "%.1f kilometres from campus", boarding.distanceToUniversityKm),
+            String(format: "rated %.1f", boarding.rating)
+        ]
+        if !boarding.facilities.isEmpty {
+            parts.append("Facilities: " + boarding.facilities.joined(separator: ", "))
+        }
+        if let match { parts.append("\(match) percent match for you") }
+        if isSaved { parts.append("Saved") }
+        return parts.joined(separator: ", ")
+    }
+    
+    
     // MARK: - Photo with title on top
 
     private var photo: some View {
