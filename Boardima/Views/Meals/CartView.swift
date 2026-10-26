@@ -27,11 +27,12 @@ struct CartView: View {
                                             .foregroundStyle(Theme.brown)
                                         Text("Rs. \(line.meal.price * line.quantity)")
                                             .font(.subheadline.bold())
-                                            .foregroundStyle(Theme.orange)
+                                            .foregroundStyle(Theme.orangeStrong)
                                     }
                                     Spacer(minLength: 4)
                                     QuantityControl(
                                         quantity: line.quantity,
+                                        itemName: line.meal.name,
                                         onAdd: { cart.add(line.meal) },
                                         onRemove: { cart.remove(line.meal) }
                                     )
@@ -67,6 +68,7 @@ struct CartView: View {
                             }
                             .buttonStyle(BrandButtonStyle())
                         }
+                        .readableContentWidth(640)
                         .padding()
                     }
                 }

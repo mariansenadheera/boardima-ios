@@ -71,6 +71,7 @@ struct OrderConfirmationView: View {
                 Button("Done", action: onDone)
                     .buttonStyle(BrandButtonStyle())
             }
+            .readableContentWidth(640)
             .padding()
         }
         .background(Theme.background)

@@ -42,6 +42,7 @@ struct AuthView: View {
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(Theme.brown)
             }
+            .readableContentWidth(480)
             .padding(.horizontal, 24)
             .padding(.top, 48)
             .padding(.bottom, 24)
@@ -75,10 +76,12 @@ struct AuthView: View {
                 fieldRow(icon: "person", title: "FULL NAME") {
                     TextField("Your full name", text: $fullName)
                         .textContentType(.name)
+                        .accessibilityLabel("Full name")
                 }
                 Divider()
                 fieldRow(icon: "building.columns", title: "UNIVERSITY") {
                     TextField("e.g. University of Moratuwa", text: $university)
+                        .accessibilityLabel("University")
                 }
                 Divider()
             }
@@ -89,6 +92,7 @@ struct AuthView: View {
                     .keyboardType(.emailAddress)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
+                    .accessibilityLabel("Student email")
             }
             Divider()
 
@@ -104,6 +108,7 @@ struct AuthView: View {
                     .textContentType(isSignUp ? .newPassword : .password)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
+                    .accessibilityLabel("Password")
                 }
                 Button {
                     showPassword.toggle()

@@ -24,16 +24,19 @@ struct CheckoutView: View {
                         FormFieldRow(icon: "mappin.and.ellipse", title: "BOARDING ADDRESS") {
                             TextField("Where should we deliver?", text: $address, axis: .vertical)
                                 .textContentType(.fullStreetAddress)
+                                .accessibilityLabel("Boarding address")
                         }
                         Divider()
                         FormFieldRow(icon: "phone", title: "PHONE NUMBER") {
                             TextField("07X XXX XXXX", text: $phone)
                                 .textContentType(.telephoneNumber)
                                 .keyboardType(.phonePad)
+                                .accessibilityLabel("Phone number")
                         }
                         Divider()
                         FormFieldRow(icon: "text.bubble", title: "NOTE FOR THE VENDOR (OPTIONAL)") {
                             TextField("Less spicy, no onions…", text: $note, axis: .vertical)
+                                .accessibilityLabel("Note for the vendor, optional")
                         }
                     }
                     .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cornerRadius))
@@ -88,9 +91,10 @@ struct CheckoutView: View {
                             Label("Confirm order", systemImage: "checkmark.circle")
                         }
                     }
-                    .buttonStyle(BrandButtonStyle(tint: Theme.orange))
+                    .buttonStyle(BrandButtonStyle(tint: Theme.orangeStrong))
                     .disabled(cart.isPlacing)
                 }
+                .readableContentWidth(640)
                 .padding()
             }
             .scrollDismissesKeyboard(.interactively)

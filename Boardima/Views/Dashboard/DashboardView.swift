@@ -8,6 +8,8 @@ struct DashboardView: View {
     @Environment(MatchViewModel.self) private var match
     @Environment(SavedViewModel.self) private var saved
     @Environment(TabRouter.self) private var router
+    
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     private var firstName: String {
         auth.fullName.split(separator: " ").first.map(String.init) ?? ""
@@ -97,11 +99,14 @@ struct DashboardView: View {
     }
 
     private var quickActions: some View {
-        HStack(spacing: 12) {
+        let layout = typeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(spacing: 12))
+            : AnyLayout(HStackLayout(spacing: 12))
+        return layout {
             tile("Find Boarding", symbol: "building.2.fill", fill: Theme.navy) {
                 router.selected = .boardings
             }
-            tile("Order Lunch", symbol: "fork.knife", fill: Theme.orange) {
+            tile("Order Lunch", symbol: "fork.knife", fill: Theme.orangeStrong) {
                 router.selected = .meals
             }
         }
@@ -132,14 +137,17 @@ struct DashboardView: View {
             if recommended.isEmpty {
                 Text("No boardings found near this campus yet.").foregroundStyle(.secondary)
             }
-            ForEach(recommended) { boarding in
-                NavigationLink(value: boarding) {
-                    BoardingRow(boarding: boarding,
-                                isSaved: saved.isSaved(boarding.id),
-                                match: match.score(for: boarding),
-                                onToggleSave: { saved.toggle(boarding) })
+            
+            LazyVGrid(columns: AdaptiveColumns.cards(), spacing: 16) {
+                ForEach(recommended) { boarding in
+                    NavigationLink(value: boarding) {
+                        BoardingRow(boarding: boarding,
+                                    isSaved: saved.isSaved(boarding.id),
+                                    match: match.score(for: boarding),
+                                    onToggleSave: { saved.toggle(boarding) })
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
             }
         }
     }
@@ -167,7 +175,9 @@ struct DashboardView: View {
     private func sectionHeader(_ title: String, action: String,
                                perform: @escaping () -> Void) -> some View {
         HStack {
-            Text(title).font(.title3.bold())
+            Text(title)
+                .font(.title3.bold())
+                .accessibilityAddTraits(.isHeader)
             Spacer()
             Button(action, action: perform)
                 .font(.subheadline.weight(.semibold))

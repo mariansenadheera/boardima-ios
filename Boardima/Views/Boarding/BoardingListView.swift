@@ -23,7 +23,9 @@ struct BoardingListView: View {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 16) {
                         HStack(spacing: 10) {
-                            Text("Find Boarding").font(.title2.bold())
+                            Text("Find Boarding")
+                                .font(.title2.bold())
+                                .accessibilityAddTraits(.isHeader)
                             Spacer()
                             NavigationLink {
                                 BoardingMapView()
@@ -48,14 +50,16 @@ struct BoardingListView: View {
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
 
-                        ForEach(displayed) { boarding in
-                            NavigationLink(value: boarding) {
-                                BoardingRow(boarding: boarding,
-                                            isSaved: saved.isSaved(boarding.id),
-                                            match: match.score(for: boarding),
-                                            onToggleSave: { saved.toggle(boarding) })
+                        LazyVGrid(columns: AdaptiveColumns.cards(), spacing: 16) {
+                            ForEach(displayed) { boarding in
+                                NavigationLink(value: boarding) {
+                                    BoardingRow(boarding: boarding,
+                                                isSaved: saved.isSaved(boarding.id),
+                                                match: match.score(for: boarding),
+                                                onToggleSave: { saved.toggle(boarding) })
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
                         }
                     }
                     .padding(.horizontal)

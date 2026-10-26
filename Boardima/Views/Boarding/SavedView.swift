@@ -25,7 +25,9 @@ struct SavedView: View {
                 AppHeader()
 
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Saved").font(.title2.bold())
+                    Text("Saved")
+                        .font(.title2.bold())
+                        .accessibilityAddTraits(.isHeader)
                     if !allSaved.isEmpty {
                         Picker("Show", selection: $showAll) {
                             Text("Near \(campusStore.selected.shortName) (\(nearCampus.count))").tag(false)
@@ -51,7 +53,7 @@ struct SavedView: View {
                     }
                 } else {
                     ScrollView {
-                        LazyVStack(spacing: 16) {
+                        LazyVGrid(columns: AdaptiveColumns.cards(), spacing: 16) {
                             ForEach(items) { boarding in
                                 NavigationLink(value: boarding) {
                                     BoardingRow(boarding: boarding, isSaved: true,

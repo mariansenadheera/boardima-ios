@@ -117,7 +117,9 @@ struct BoardingDetailView: View {
                 .cardStyle()
                 .accessibilityElement(children: .combine)
 
-                Text("Essential amenities").font(.title3.bold())
+                Text("Essential amenities")
+                    .font(.title3.bold())
+                    .accessibilityAddTraits(.isHeader)
                 LazyVGrid(columns: columns, spacing: 12) {
                     ForEach(boarding.facilities, id: \.self) { facility in
                         HStack(spacing: 10) {
@@ -134,6 +136,7 @@ struct BoardingDetailView: View {
                     }
                 }
             }
+            .readableContentWidth(720)
             .padding()
         }
         .background(Theme.background)

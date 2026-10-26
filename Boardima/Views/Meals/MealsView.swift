@@ -15,7 +15,9 @@ struct MealsView: View {
                 ScrollView {
                     LazyVStack(spacing: 14) {
                         HStack {
-                            Text("Meals").font(.title2.bold())
+                            Text("Meals")
+                                .font(.title2.bold())
+                                .accessibilityAddTraits(.isHeader)
                             Spacer()
                             cartButton
                         }
@@ -32,8 +34,10 @@ struct MealsView: View {
                         .padding(8)
                         .background(Theme.card, in: RoundedRectangle(cornerRadius: 16))
 
-                        ForEach(model.filtered) { meal in
-                            MealRow(meal: meal)
+                        LazyVGrid(columns: AdaptiveColumns.cards(minimum: 340), spacing: 14) {
+                            ForEach(model.filtered) { meal in
+                                MealRow(meal: meal)
+                            }
                         }
                     }
                     .padding(.horizontal)
