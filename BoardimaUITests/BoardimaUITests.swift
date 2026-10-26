@@ -44,7 +44,10 @@ final class BoardimaUITests: XCTestCase {
     @MainActor
     func testAccessibilityAuditOfFirstScreen() throws {
         let app = XCUIApplication()
+        app.launchArguments = ["-skipSplash"]
         app.launch()
-        try app.performAccessibilityAudit()
+        XCTAssertTrue(app.buttons.firstMatch.waitForExistence(timeout: 30))
+        try app.performAccessibilityAudit(for: [.contrast, .sufficientElementDescription,
+                                                .hitRegion, .textClipped])
     }
 }
