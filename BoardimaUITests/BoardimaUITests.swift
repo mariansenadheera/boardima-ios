@@ -41,6 +41,10 @@ final class BoardimaUITests: XCTestCase {
         app.launch()
         XCTAssertTrue(app.buttons.firstMatch.waitForExistence(timeout: 30))
         try app.performAccessibilityAudit(for: [.contrast, .sufficientElementDescription,
-                                                .hitRegion, .textClipped])
+                                                .hitRegion, .textClipped]) { issue in
+            print("A11Y ISSUE:", issue.compactDescription,
+                  "| element:", issue.element?.debugDescription ?? "nil")
+            return false   // false = still report it as a failure
+        }
     }
 }
