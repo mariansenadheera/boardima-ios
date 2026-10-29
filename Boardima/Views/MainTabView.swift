@@ -9,6 +9,7 @@ struct MainTabView: View {
     @State private var match = MatchViewModel()
     @State private var notifications = NotificationManager()
     @State private var router = TabRouter()
+    @State private var openedBoarding: Boarding?
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
@@ -43,7 +44,41 @@ struct MainTabView: View {
         .environment(router)
         .onChange(of: scenePhase) { _, phase in
             if phase == .background { lock.lockIfNeeded() }
+            if phase == .active { applyPendingTab() }
         }
-        .task { await notifications.refreshStatus() }
+        .onOpenURL { url in
+            guard let id = PosterLink.boardingID(from: url.absoluteString) else { return }
+            Task {
+                await boardingList.load()
+                openedBoarding = boardingList.boardings.first { $0.id == id }
+            }
+        }
+        .sheet(item: $openedBoarding) { boarding in
+            NavigationStack {
+                BoardingDetailView(boarding: boarding)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Close") { openedBoarding = nil }
+                        }
+                    }
+            }
+        }
+        .task {
+            await notifications.refreshStatus()
+            applyPendingTab()
+            await boardingList.load()
+            publishWidget()
+        }
+        .onChange(of: saved.savedIDs) { _, _ in publishWidget() }
+        .onChange(of: CampusStore.shared.selected) { _, _ in publishWidget() }
+    }
+    
+    private func applyPendingTab() {
+        if let tab = PendingNavigation.take() { router.selected = tab }
+    }
+
+    private func publishWidget() {
+        WidgetPublisher.publish(list: boardingList, match: match, saved: saved,
+                                campus: CampusStore.shared.selected)
     }
 }
