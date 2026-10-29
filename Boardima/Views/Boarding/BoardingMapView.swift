@@ -13,7 +13,7 @@ struct BoardingMapView: View {
 
     private var campus: Campus { campusStore.selected }
 
-    /// Search centre: the user's location if they're near the chosen campus, otherwise the campus.
+   
     private var center: CLLocationCoordinate2D {
         guard let user = location.userLocation else { return campus.coordinate }
         return user.distance(from: campus.location) < 30_000 ? user.coordinate : campus.coordinate
@@ -89,7 +89,7 @@ struct BoardingMapView: View {
         .onChange(of: campusStore.selected) { recenter() }
     }
 
-    // MARK: - Pieces
+    //Pieces
 
     private func radiusLabel(_ km: Double) -> String {
         km < 1 ? "\(Int(km * 1000)) m" : "\(Int(km)) km"
@@ -198,7 +198,7 @@ struct BoardingMapView: View {
         .padding(.bottom, 4)
     }
 
-    // MARK: - Camera
+    // Camera
 
     private func recenter() {
         let span = mapViewModel.radiusKm * 2400

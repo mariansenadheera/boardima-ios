@@ -2,7 +2,7 @@ import Foundation
 import CoreML
 import Observation
 
-/// Holds the student's matching preferences and scores boardings with the on-device Core ML model.
+
 @MainActor
 @Observable
 final class MatchViewModel {
@@ -31,7 +31,7 @@ final class MatchViewModel {
 
     var isModelAvailable: Bool { model != nil }
 
-    /// Match percentage (0–100) for a boarding, or nil if the model isn't available.
+    
     func score(for boarding: Boarding) -> Int? {
         predict(budget: budget,
                 rent: Double(boarding.monthlyRent),
@@ -43,7 +43,7 @@ final class MatchViewModel {
             .map { Int($0.rounded()) }
     }
 
-    /// Raw prediction used by the app and by the Core ML demo screen.
+    
     func predict(budget: Double, rent: Double, distanceKm: Double, roomType: String,
                  preferredRoomType: String, facilityCount: Double, rating: Double) -> Double? {
         guard let model else { return nil }
@@ -68,7 +68,7 @@ final class MatchViewModel {
         }
     }
 
-    /// Create ML may treat whole-number columns as Int64, so match each input's declared type.
+    
     private func number(_ value: Double, for name: String, in model: MLModel) -> MLFeatureValue {
         if model.modelDescription.inputDescriptionsByName[name]?.type == .int64 {
             return MLFeatureValue(int64: Int64(value))

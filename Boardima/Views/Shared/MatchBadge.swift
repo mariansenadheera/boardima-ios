@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Match score as a ring with a plain-language label.
+
 struct MatchBadge: View {
     let score: Int
     var size: CGFloat = 48

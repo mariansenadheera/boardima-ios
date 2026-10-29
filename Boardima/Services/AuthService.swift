@@ -2,13 +2,13 @@ import Foundation
 import FirebaseAuth
 import FirebaseFirestore
 
-/// A readable error message to show on screen.
+
 struct AuthFailure: LocalizedError {
     let message: String
     var errorDescription: String? { message }
 }
 
-/// Abstraction over the backend so view models can be unit tested with a mock.
+
 protocol AuthServiceProtocol {
     var currentUserID: String? { get }
     var currentEmail: String? { get }
@@ -76,7 +76,7 @@ final class FirebaseAuthService: AuthServiceProtocol {
     }
 }
 
-/// Stand-in used by previews and unit tests so they don't need Firebase.
+
 struct PreviewAuthService: AuthServiceProtocol {
     var currentUserID: String? { nil }
     var currentEmail: String? { "student@example.com" }

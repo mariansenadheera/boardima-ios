@@ -51,7 +51,7 @@ struct BoardingRow: View {
 
     @Environment(\.dynamicTypeSize) private var typeSize
 
-    /// One clear sentence for VoiceOver instead of many small stops.
+
     private var accessibilitySummary: String {
         var parts = [
             boarding.title,
@@ -70,7 +70,7 @@ struct BoardingRow: View {
     }
     
     
-    // MARK: - Photo with title on top
+    //Photo with title on top
 
     private var photo: some View {
         PhotoView(name: PhotoLibrary.roomImageName(for: boarding.id), symbol: "bed.double.fill")
@@ -115,7 +115,7 @@ struct BoardingRow: View {
     }
 }
 
-// MARK: - Match strip
+
 
 private struct MatchStrip: View {
     let score: Int

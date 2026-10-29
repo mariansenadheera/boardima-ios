@@ -12,7 +12,7 @@ struct MatchSample: Identifiable {
     let actualScore: Double
 }
 
-/// Reads the bundled local test dataset (not Firebase) used to demonstrate the Core ML model.
+
 enum MatchDatasetLoader {
     static func loadTestSamples() -> [MatchSample] {
         guard let url = Bundle.main.url(forResource: "boardima_match_test", withExtension: "csv"),

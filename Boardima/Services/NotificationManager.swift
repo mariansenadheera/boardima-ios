@@ -2,7 +2,7 @@ import Foundation
 import UserNotifications
 import Observation
 
-/// Lets banners show even while the app is open.
+
 final class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
                                             willPresent notification: UNNotification) async
@@ -45,7 +45,7 @@ final class NotificationManager {
         return isAuthorized
     }
 
-    /// Simulates the vendor's status updates. A production app would send these from a server.
+    
     func scheduleOrderUpdates(for order: Order) async {
         guard await ensurePermission() else { return }
 
@@ -88,7 +88,7 @@ final class NotificationManager {
         UserDefaults.standard.set(enabled, forKey: Self.reminderKey)
     }
 
-    // MARK: - Helpers
+
 
     private static func allows(_ status: UNAuthorizationStatus) -> Bool {
         status == .authorized || status == .provisional || status == .ephemeral

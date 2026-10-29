@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Logo mark from the asset catalog ("Logo"), with a fallback icon.
+
 struct LogoMark: View {
     var size: CGFloat = 40
 
@@ -23,7 +23,7 @@ struct LogoMark: View {
     }
 }
 
-/// Top bar used on every tab: logo and name on the left, profile photo on the right.
+
 struct AppHeader: View {
     @Environment(AuthViewModel.self) private var auth
     @Environment(TabRouter.self) private var router
@@ -54,7 +54,7 @@ struct AppHeader: View {
     }
 }
 
-/// Round icon button background used for map, filter and cart.
+
 struct CircleIcon: View {
     let symbol: String
 
@@ -68,7 +68,7 @@ struct CircleIcon: View {
     }
 }
 
-/// Search box used instead of the navigation bar search.
+
 struct SearchField: View {
     let prompt: String
     @Binding var text: String

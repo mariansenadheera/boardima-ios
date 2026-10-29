@@ -1,7 +1,7 @@
 import Foundation
 import Observation
 
-/// The campus the student is heading to today. Saved on the device between launches.
+
 @MainActor
 @Observable
 final class CampusStore {
@@ -16,7 +16,7 @@ final class CampusStore {
 
     @ObservationIgnored private let persists: Bool
 
-    /// Pass a campus to get an isolated store that doesn't touch saved settings (used in unit tests).
+    
     init(selected: Campus? = nil) {
         if let selected {
             self.selected = selected

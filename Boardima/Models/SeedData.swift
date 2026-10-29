@@ -1,7 +1,7 @@
 import Foundation
 
 extension Boarding {
-    /// Extra records uploaded to Firestore only. Kept out of `samples` so unit tests stay stable.
+    
     static let extraSeedData: [Boarding] = [
         Boarding(id: "7", title: "Sunrise Annex", address: "Katubedda Road, Moratuwa",
                  monthlyRent: 14000, roomType: "Single", facilities: ["WiFi", "Study room"],

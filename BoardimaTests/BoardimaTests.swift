@@ -5,7 +5,7 @@ import UIKit
 import CoreImage.CIFilterBuiltins
 @testable import Boardima
 
-// MARK: - Mocks
+//Mocks
 
 private enum MockError: Error { case failed }
 
@@ -38,7 +38,7 @@ private struct MockAuthService: AuthServiceProtocol {
     func fetchFullName() async -> String? { "Test Student" }
 }
 
-// MARK: - Cart
+//Cart
 
 @MainActor
 struct CartViewModelTests {
@@ -98,7 +98,7 @@ struct CartViewModelTests {
     }
 }
 
-// MARK: - Boarding search and filters
+//Boarding search and filters
 
 @MainActor
 struct BoardingListViewModelTests {
@@ -161,7 +161,7 @@ struct BoardingListViewModelTests {
     }
 }
 
-// MARK: - Login logic
+//Login logic
 
 @MainActor
 struct AuthViewModelTests {
@@ -201,7 +201,7 @@ struct AuthViewModelTests {
     }
 }
 
-// MARK: - Map radius
+//Map radius
 
 @MainActor
 struct MapViewModelTests {
@@ -228,7 +228,7 @@ struct AppearanceTests {
     }
 }
 
-// MARK: - Poster scan
+//Poster scan
 
 @MainActor
 struct PosterScanTests {

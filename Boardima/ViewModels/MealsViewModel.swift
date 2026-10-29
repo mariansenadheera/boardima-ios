@@ -10,7 +10,6 @@ final class MealsViewModel {
     var isLoading = false
     var errorMessage: String?
 
-    /// Only meals from vendors within this many km of the selected campus are listed.
     let searchRadiusKm: Double = 8
 
     private let repository: MealRepositoryProtocol

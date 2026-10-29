@@ -34,7 +34,7 @@ final class MapViewModel {
 
     var hasRoute: Bool { route != nil || !straightLine.isEmpty }
 
-    /// Boardings within the chosen radius of the centre point.
+    
     func nearby(_ boardings: [Boarding], around center: CLLocationCoordinate2D) -> [Boarding] {
         let centre = CLLocation(latitude: center.latitude, longitude: center.longitude)
         return boardings.filter { boarding in
@@ -55,7 +55,7 @@ final class MapViewModel {
             let minutes = max(1, Int((result.expectedTravelTime / 60).rounded()))
             routeSummary = "\(minutes) min · \(String(format: "%.1f", result.distance / 1000)) km"
         } catch {
-            // Fall back to a straight line so the demo still works offline or where routing is limited.
+            
             let from = CLLocation(latitude: origin.latitude, longitude: origin.longitude)
             let to = CLLocation(latitude: boarding.latitude, longitude: boarding.longitude)
             straightLine = [origin, boarding.coordinate]

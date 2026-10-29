@@ -10,18 +10,18 @@ extension Color {
 }
 
 enum Theme {
-    // Approximate values taken from the prototype. Check them with Figma's Inspect panel and adjust.
+    
     static let navy = Color(hex: 0x0B1B3F)
     static let orange = Color(hex: 0xE8832A)
     //static let brown = Color(hex: 0x8A4A12)
-    /// Navy for text and icons. Lighter in dark mode so it stays readable.
+    // Navy for text and icons. Lighter in dark mode so it stays readable.
     static let ink = Color(UIColor { traits in
         traits.userInterfaceStyle == .dark
             ? UIColor(red: 0.66, green: 0.76, blue: 1.0, alpha: 1)
             : UIColor(red: 0x0B / 255, green: 0x1B / 255, blue: 0x3F / 255, alpha: 1)
     })
 
-    /// Brown text. Becomes a warm orange in dark mode.
+
     static let brown = Color(UIColor { traits in
         traits.userInterfaceStyle == .dark
             ? UIColor(red: 0.94, green: 0.63, blue: 0.33, alpha: 1)
@@ -29,7 +29,7 @@ enum Theme {
     })
     static let green = Color(hex: 0x1E7A45)
     
-    /// Deeper orange for text and button backgrounds.
+
     static let orangeStrong = Color(hex: 0xB45309)
 
     static let background = Color(.systemGroupedBackground)
@@ -37,7 +37,7 @@ enum Theme {
     static let cornerRadius: CGFloat = 20
 }
 
-/// Rounded white card with a soft shadow, as used across the Figma screens.
+
 struct CardStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
@@ -47,7 +47,7 @@ struct CardStyle: ViewModifier {
     }
 }
 
-/// Small rounded label, as used for facilities and filters.
+
 struct ChipStyle: ViewModifier {
     var tint: Color = Theme.navy
     func body(content: Content) -> some View {
@@ -60,7 +60,7 @@ struct ChipStyle: ViewModifier {
     }
 }
 
-/// Full-width navy or orange button.
+
 struct BrandButtonStyle: ButtonStyle {
     var tint: Color = Theme.navy
     func makeBody(configuration: Configuration) -> some View {

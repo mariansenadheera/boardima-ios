@@ -52,7 +52,7 @@ struct AuthView: View {
         .onChange(of: isSignUp) { auth.errorMessage = nil }
     }
 
-    // MARK: - Pieces
+    //Pieces
 
     private var header: some View {
         VStack(spacing: 10) {

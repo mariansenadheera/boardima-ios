@@ -1,9 +1,9 @@
 import Foundation
 
-/// Sample boardings and food vendors around each campus, uploaded to Firestore once.
+
 enum CampusSeedData {
 
-    // MARK: - Builders
+    // Builders
 
     private struct BoardingSeed {
         let title: String
@@ -59,7 +59,7 @@ enum CampusSeedData {
         }
     }
 
-    // MARK: - Moratuwa vendors (the original sample meals)
+    // Moratuwa vendors (the original sample meals)
 
     static var moratuwaMeals: [Meal] {
         let offsets: [String: (north: Double, east: Double)] = [
@@ -74,7 +74,7 @@ enum CampusSeedData {
         }
     }
 
-    // MARK: - All other campuses
+    // All other campuses
 
     static var boardings: [Boarding] {
         nibmBoardings + jayewardenepuraBoardings
@@ -84,7 +84,7 @@ enum CampusSeedData {
         nibmMeals + jayewardenepuraMeals
     }
 
-    // MARK: - NIBM
+    // NIBM
 
     private static var nibmBoardings: [Boarding] {
         boardings(for: .nibm, prefix: "nibm", seeds: [
@@ -117,7 +117,7 @@ enum CampusSeedData {
         ])
     }
 
-    // MARK: - Sri Jayewardenepura
+    // Sri Jayewardenepura
 
     private static var jayewardenepuraBoardings: [Boarding] {
         boardings(for: .jayewardenepura, prefix: "sjp", seeds: [

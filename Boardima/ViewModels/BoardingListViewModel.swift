@@ -11,7 +11,7 @@ final class BoardingListViewModel {
     var isLoading = false
     var errorMessage: String?
 
-    /// Only boardings within this many km of the selected campus are listed.
+    
     let searchRadiusKm: Double = 8
 
     private var allBoardings: [Boarding] = []
@@ -23,7 +23,7 @@ final class BoardingListViewModel {
         self.campusStore = campusStore ?? CampusStore.shared
     }
 
-    /// Every loaded boarding, with its distance measured from the selected campus.
+    
     var boardings: [Boarding] {
         let campus = campusStore.selected
         return allBoardings.map { boarding in

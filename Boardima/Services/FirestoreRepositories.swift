@@ -47,7 +47,7 @@ struct FirestoreOrderRepository: OrderRepositoryProtocol {
 }
 
 
-/// One-off helper that uploads sample boardings and meals for every campus.
+
 struct FirestoreSeeder {
     func seed() async throws {
         let db = Firestore.firestore()

@@ -43,8 +43,7 @@ final class CartViewModel {
         errorMessage = nil
     }
 
-    /// Returns the placed order, or nil if validation or the request failed.
-    /// The cart is cleared by the confirmation screen, not here.
+    
     func placeOrder(address: String, phone: String, note: String) async -> Order? {
         let address = address.trimmingCharacters(in: .whitespacesAndNewlines)
         let digits = phone.filter(\.isNumber)

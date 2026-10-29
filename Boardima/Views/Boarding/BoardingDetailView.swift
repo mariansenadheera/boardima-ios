@@ -19,7 +19,7 @@ struct BoardingDetailView: View {
         var id: String { text }
     }
 
-    /// Plain-language comparison of this listing with the student's preferences.
+    
     private var reasons: [Reason] {
         let budget = Int(match.budget)
         var items: [Reason] = []

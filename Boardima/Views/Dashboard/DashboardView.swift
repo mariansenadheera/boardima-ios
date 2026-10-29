@@ -62,7 +62,7 @@ struct DashboardView: View {
         }
     }
 
-    // MARK: - Sections
+    //Sections
 
     private var greetingBlock: some View {
         VStack(alignment: .leading, spacing: 12) {

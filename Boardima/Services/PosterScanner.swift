@@ -3,7 +3,7 @@ import UIKit
 import CoreImage
 import ImageIO
 
-/// Reads QR codes from a selected poster photo.
+
 struct PosterScanner {
 
     func payloads(in image: UIImage) async throws -> [String] {
@@ -45,7 +45,7 @@ enum PosterScannerError: LocalizedError {
 }
 
 
-/// The link stored in a Boardima poster QR code, for example boardima://boarding/nibm-1
+
 enum PosterLink {
     static func boardingID(from payload: String) -> String? {
         let text = payload.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -57,7 +57,7 @@ enum PosterLink {
     }
 }
 
-/// Converts a photo's UIKit orientation to the one Vision expects.
+
 extension CGImagePropertyOrientation {
     init(_ orientation: UIImage.Orientation) {
         switch orientation {

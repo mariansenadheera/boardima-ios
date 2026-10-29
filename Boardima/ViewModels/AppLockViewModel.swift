@@ -30,7 +30,7 @@ final class AppLockViewModel {
         if ok { isLocked = false }
     }
 
-    /// Enabling requires a successful check first, so the user can't lock themselves out.
+  
     func setEnabled(_ enabled: Bool) async {
         if enabled {
             let ok = await biometrics.authenticate(reason: "Turn on \(biometryName) for Boardima")
