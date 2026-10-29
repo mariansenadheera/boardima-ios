@@ -258,3 +258,19 @@ struct PosterScanTests {
         #expect(payloads == ["boardima://boarding/3"])
     }
 }
+
+// Widget and navigation
+
+struct WidgetAndNavigationTests {
+    @Test func snapshotSurvivesEncodingAndDecoding() throws {
+        let data = try JSONEncoder().encode(WidgetSnapshot.sample)
+        let decoded = try JSONDecoder().decode(WidgetSnapshot.self, from: data)
+        #expect(decoded == WidgetSnapshot.sample)
+    }
+
+    @Test func pendingTabIsReadOnce() {
+        PendingNavigation.set(.saved)
+        #expect(PendingNavigation.take() == .saved)
+        #expect(PendingNavigation.take() == nil)
+    }
+}
