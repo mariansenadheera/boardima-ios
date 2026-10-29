@@ -1,6 +1,8 @@
 import Testing
 import CoreLocation
 import SwiftUI
+import UIKit
+import CoreImage.CIFilterBuiltins
 @testable import Boardima
 
 // MARK: - Mocks
@@ -223,5 +225,36 @@ struct AppearanceTests {
         #expect(AppearanceMode.system.scheme == nil)
         #expect(AppearanceMode.light.scheme == .light)
         #expect(AppearanceMode.dark.scheme == .dark)
+    }
+}
+
+// MARK: - Poster scan
+
+@MainActor
+struct PosterScanTests {
+    @Test func readsBoardingIDFromPosterLink() {
+        #expect(PosterLink.boardingID(from: "boardima://boarding/nibm-1") == "nibm-1")
+        #expect(PosterLink.boardingID(from: "boardima://boarding/3") == "3")
+    }
+
+    @Test func ignoresLinksThatAreNotBoardimaPosters() {
+        #expect(PosterLink.boardingID(from: "https://example.com/boarding/1") == nil)
+        #expect(PosterLink.boardingID(from: "boardima://meal/1") == nil)
+        #expect(PosterLink.boardingID(from: "boardima://boarding/") == nil)
+        #expect(PosterLink.boardingID(from: "hello") == nil)
+    }
+
+    @Test func coreImageReadsAGeneratedQRCode() async throws {
+        let filter = CIFilter.qrCodeGenerator()
+        filter.message = Data("boardima://boarding/3".utf8)
+        let output = try #require(filter.outputImage?
+            .transformed(by: CGAffineTransform(scaleX: 10, y: 10))
+            .samplingNearest())
+        let context = CIContext()
+        let cgImage = try #require(context.createCGImage(output, from: output.extent))
+
+        let payloads = try await PosterScanner().payloads(in: UIImage(cgImage: cgImage))
+
+        #expect(payloads == ["boardima://boarding/3"])
     }
 }

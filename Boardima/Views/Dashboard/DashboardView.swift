@@ -10,6 +10,7 @@ struct DashboardView: View {
     @Environment(TabRouter.self) private var router
     
     @Environment(\.dynamicTypeSize) private var typeSize
+    @State private var showScanner = false
 
     private var firstName: String {
         auth.fullName.split(separator: " ").first.map(String.init) ?? ""
@@ -38,6 +39,7 @@ struct DashboardView: View {
                     VStack(alignment: .leading, spacing: 24) {
                         greetingBlock
                         quickActions
+                        scanButton
                         recommendedSection
                         mealsSection
                     }
@@ -56,6 +58,7 @@ struct DashboardView: View {
                 await boardingList.load()
                 await mealsViewModel.load()
             }
+            .sheet(isPresented: $showScanner) { PosterScanView() }
         }
     }
 
@@ -110,6 +113,32 @@ struct DashboardView: View {
                 router.selected = .meals
             }
         }
+    }
+    
+    private var scanButton: some View {
+        Button {
+            showScanner = true
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: "qrcode.viewfinder")
+                    .font(.title2)
+                    .frame(width: 44, height: 44)
+                    .background(Theme.navy.opacity(0.08), in: Circle())
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Scan a boarding poster").font(.subheadline.weight(.semibold))
+                    Text("Read the QR code on a poster and open the boarding")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Image(systemName: "chevron.right").foregroundStyle(.secondary)
+            }
+            .foregroundStyle(.primary)
+            .padding(12)
+            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cornerRadius))
+            .shadow(color: .black.opacity(0.06), radius: 8, y: 2)
+        }
+        .buttonStyle(.plain)
     }
 
     private func tile(_ title: String, symbol: String, fill: Color,
