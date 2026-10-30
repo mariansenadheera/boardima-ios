@@ -8,20 +8,19 @@ struct BoardingMapView: View {
     @State private var mapViewModel = MapViewModel()
     @State private var location = LocationManager()
     @State private var position: MapCameraPosition = .automatic
+    @State private var searchFromMe = false
 
     private let radiusOptions: [Double] = [0.5, 1, 2, 3, 5]
 
     private var campus: Campus { campusStore.selected }
 
-   
     private var center: CLLocationCoordinate2D {
-        guard let user = location.userLocation else { return campus.coordinate }
-        return user.distance(from: campus.location) < 30_000 ? user.coordinate : campus.coordinate
+        if searchFromMe, let user = location.userLocation { return user.coordinate }
+        return campus.coordinate
     }
 
     private var usesUserLocation: Bool {
-        guard let user = location.userLocation else { return false }
-        return user.distance(from: campus.location) < 30_000
+        searchFromMe && location.userLocation != nil
     }
 
     private var nearby: [Boarding] {
@@ -87,9 +86,10 @@ struct BoardingMapView: View {
         .onChange(of: mapViewModel.route) { showWholeRoute() }
         .onChange(of: location.userLocation) { recenter() }
         .onChange(of: campusStore.selected) { recenter() }
+        .onChange(of: searchFromMe) { recenter() }
     }
 
-    //Pieces
+    // Pieces
 
     private func radiusLabel(_ km: Double) -> String {
         km < 1 ? "\(Int(km * 1000)) m" : "\(Int(km)) km"
@@ -97,6 +97,15 @@ struct BoardingMapView: View {
 
     private var radiusBar: some View {
         VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 8) {
+                FilterChip(title: "From \(campus.shortName)", isSelected: !searchFromMe) {
+                    searchFromMe = false
+                }
+                FilterChip(title: "From me", isSelected: searchFromMe) {
+                    searchFromMe = true
+                    location.requestPermission()
+                }
+            }
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(radiusOptions, id: \.self) { km in
@@ -117,11 +126,10 @@ struct BoardingMapView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            if !usesUserLocation {
-                Text("Measuring from \(campus.name). Allow location access to search around you.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
+            Text(usesUserLocation ? "Measuring from your location."
+                                  : "Measuring from \(campus.name).")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
         .padding(12)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))

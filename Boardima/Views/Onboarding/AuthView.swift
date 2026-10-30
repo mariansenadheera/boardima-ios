@@ -75,14 +75,12 @@ struct AuthView: View {
 
 
                 Button(isSignUp ? "Already have an account? Log in" : "New here? Create an account") {
-
                     isSignUp.toggle()
-
                 }
-
                 .font(.subheadline.weight(.medium))
-
                 .foregroundStyle(Theme.brown)
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
 
             }
 
@@ -223,21 +221,14 @@ struct AuthView: View {
                 }
 
                 Button {
-
                     showPassword.toggle()
-
                 } label: {
-
                     Image(systemName: showPassword ? "eye.slash" : "eye")
-
                         .foregroundStyle(.secondary)
-
-                        .padding(.trailing, 16)
-
+                        .frame(minWidth: 44, minHeight: 44)
+                        .contentShape(Rectangle())
                 }
-
                 .accessibilityLabel(showPassword ? "Hide password" : "Show password")
-
             }
 
         }
